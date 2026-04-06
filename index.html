@@ -64,7 +64,7 @@ body { font-family: 'Poppins', sans-serif; background:#fdf6ee; }
 
 <!--<a href="#">SEARCH</a>-->
 <a href="index.html">HOME</a>
-<a href="#new-collection">NEW ARRIVALS</a>
+<a href="index.html#new-collection" onclick="closeMenu()">NEW ARRIVALS</a>
 <a href="lehengas.html">LEHENGAS</a>
 <a href="anarkali.html">ANARKALI</a>
 <a href="kurthi.html">KURTHI</a>
@@ -77,9 +77,9 @@ body { font-family: 'Poppins', sans-serif; background:#fdf6ee; }
 </div>
 
 <!-- BOTTOM ACCOUNT -->
-<div class="absolute bottom-6 left-6 text-[#7a1f1f] text-sm">
+<!--<div class="absolute bottom-6 left-6 text-[#7a1f1f] text-sm">
 ACCOUNT
-</div>
+</div>-->
 
 </div>
 
@@ -335,6 +335,11 @@ function closeMenu() {
     document.getElementById("overlay").classList.add("hidden");
 }
 </script>
+<style>
+html {
+  scroll-behavior: smooth;
+}
+</style>
 
 </body>
 </html>
