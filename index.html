@@ -29,7 +29,7 @@ body { font-family: 'Poppins', sans-serif; background:#fdf6ee; }
 <div class="sticky top-0 bg-white shadow-md z-50">
 <div class="max-w-7xl mx-auto flex justify-between items-center px-4 py-4">
 <h1 class="logo-text text-xl">MADHURAKSHI</h1>
-<button onclick="toggleMenu()" class="md:hidden text-2xl">☰</button>
+
 <div class="hidden md:flex gap-6 text-sm">  
 <a href="#">Home</a>
 <a href="#collection">Collections</a>
@@ -39,11 +39,11 @@ body { font-family: 'Poppins', sans-serif; background:#fdf6ee; }
 </div>
 
 <!-- MOBILE MENU -->
-<div id="mobileMenu" class="hidden flex-col items-center bg-white py-4 md:hidden shadow transition-all duration-300"></div>
+<!--<div id="mobileMenu" class="hidden flex-col items-center bg-white py-4 md:hidden shadow transition-all duration-300"></div>
 <a href="#" class="py-2">Home</a>
 <a href="#collection" class="py-2">Collections</a>
 <a href="#contact" class="py-2">Contact</a>
-</div>
+</div>-->
 
 <!-- HERO -->
 <div class="max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-12 flex flex-col md:flex-row md:items-center md:justify-between gap-8">
@@ -275,11 +275,6 @@ setInterval(nextSlide, 5000);
 
 // INIT
 updateSlider();
-</script>
-<script>
-function toggleMenu() {
-  document.getElementById("mobileMenu").classList.toggle("hidden");
-}
 </script>
 
 </body>
