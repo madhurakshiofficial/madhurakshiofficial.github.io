@@ -30,7 +30,7 @@ body { font-family: 'Poppins', sans-serif; background:#fdf6ee; }
 <div class="max-w-7xl mx-auto flex justify-between items-center px-4 py-4">
 <h1 class="logo-text text-xl">MADHURAKSHI</h1>
 <button onclick="toggleMenu()" class="md:hidden text-2xl">☰</button>
-<div class="hidden md:flex gap-6 text-sm">
+<div class="hidden md:flex gap-6 text-sm">  
 <a href="#">Home</a>
 <a href="#collection">Collections</a>
 <a href="#contact">Contact</a>
@@ -73,47 +73,49 @@ the stories she weaves, and the elegance she becomes.-->
 <h2 class="heading text-xl text-center mb-6 text-red-800">New Collection ✨</h2>
 
 <div class="relative w-full overflow-hidden">
+
+<!-- SLIDES -->
 <div id="slider" class="flex transition-transform duration-700">
 
-<!-- FIRST SLIDE (L2) -->
+<!-- SLIDE 1 -->
 <div class="min-w-full text-center px-4">
-
   <a href="l2.html">
-    <div class="product-card bg-white p-4 rounded-xl shadow transition transform hover:scale-105 text-center cursor-pointer max-w-xs mx-auto">
-
+    <div class="product-card bg-white p-4 rounded-xl shadow hover:scale-105 transition max-w-xs mx-auto">
       <img class="w-full aspect-[4/5] object-cover rounded" src="frontendimages/l2-1.png">
-
-      <h2 class="mt-3 font-semibold text-[#8b0000]">
-        Block Printed Pastel Blue Lehenga
-      </h2>
-
+      <h2 class="mt-3 font-semibold text-[#8b0000]">Block Printed Pastel Blue Lehenga</h2>
       <p class="text-[#6b4a34]">₹8,499.00</p>
-
     </div>
   </a>
-
 </div>
 
-<!-- SECOND SLIDE -->
+<!-- SLIDE 2 -->
 <div class="min-w-full text-center px-4">
-
   <a href="a1.html">
-    <div class="product-card bg-white p-4 rounded-xl shadow transition transform hover:scale-105 text-center cursor-pointer max-w-xs mx-auto">
-
-      <img class="w-full aspect-[4/5] object-cover rounded" src="frontendimages/a1-1.png" alt="Pastel Pink Anarkali">
-
-      <h2 class="mt-3 font-semibold text-[#8b0000]">
-        Pastel Pink Anarkali
-      </h2>
-
+    <div class="product-card bg-white p-4 rounded-xl shadow hover:scale-105 transition max-w-xs mx-auto">
+      <img class="w-full aspect-[4/5] object-cover rounded" src="frontendimages/a1-1.png">
+      <h2 class="mt-3 font-semibold text-[#8b0000]">Pastel Pink Anarkali</h2>
       <p class="text-[#6b4a34]">₹5,999.00</p>
-
     </div>
   </a>
-
 </div>
 
 </div>
+
+<!-- LEFT BUTTON -->
+<button onclick="prevSlide()" 
+class="absolute top-1/2 left-3 transform -translate-y-1/2 bg-white/80 px-3 py-1 rounded-full shadow">
+❮
+</button>
+
+<!-- RIGHT BUTTON -->
+<button onclick="nextSlide()" 
+class="absolute top-1/2 right-3 transform -translate-y-1/2 bg-white/80 px-3 py-1 rounded-full shadow">
+❯
+</button>
+
+<!-- DOT INDICATORS -->
+<div id="dots" class="flex justify-center mt-4 gap-2"></div>
+
 </div>
 </div>
 <!-- COLLECTION -->
@@ -227,9 +229,52 @@ the stories she weaves, and the elegance she becomes.-->
 </div>
     
 <script>
-function toggleMenu(){ document.getElementById("mobileMenu").classList.toggle("hidden"); }
-let index=0; const slider=document.getElementById("slider"); const totalSlides=slider.children.length;
-setInterval(()=>{ index=(index+1)%totalSlides; slider.style.transform=`translateX(-${index*100}%)`; },5000);
+let index = 0;
+const slider = document.getElementById("slider");
+const totalSlides = slider.children.length;
+const dotsContainer = document.getElementById("dots");
+
+// CREATE DOTS
+for (let i = 0; i < totalSlides; i++) {
+    const dot = document.createElement("div");
+    dot.className = "w-3 h-3 rounded-full bg-gray-400 cursor-pointer";
+    dot.onclick = () => goToSlide(i);
+    dotsContainer.appendChild(dot);
+}
+
+function updateSlider() {
+    slider.style.transform = `translateX(-${index * 100}%)`;
+
+    // update dots
+    [...dotsContainer.children].forEach((dot, i) => {
+        dot.classList.toggle("bg-red-800", i === index);
+        dot.classList.toggle("bg-gray-400", i !== index);
+    });
+}
+
+// NEXT
+function nextSlide() {
+    index = (index + 1) % totalSlides;
+    updateSlider();
+}
+
+// PREV
+function prevSlide() {
+    index = (index - 1 + totalSlides) % totalSlides;
+    updateSlider();
+}
+
+// DOT CLICK
+function goToSlide(i) {
+    index = i;
+    updateSlider();
+}
+
+// AUTO SLIDE
+setInterval(nextSlide, 5000);
+
+// INIT
+updateSlider();
 </script>
 
 </body>
