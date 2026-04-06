@@ -26,17 +26,65 @@ body { font-family: 'Poppins', sans-serif; background:#fdf6ee; }
 <body>
 
 <!-- NAVBAR -->
+<!-- NAVBAR -->
 <div class="sticky top-0 bg-white shadow-md z-50">
 <div class="max-w-7xl mx-auto flex justify-between items-center px-4 py-4">
-<h1 class="logo-text text-xl">MADHURAKSHI</h1>
 
+<!-- LEFT: MENU + LOGO -->
+<div class="flex items-center gap-4">
+
+<!-- MENU BUTTON (MOBILE ONLY) -->
+<button onclick="openMenu()" class="md:hidden text-2xl">
+☰
+</button>
+
+<h1 class="logo-text text-xl">MADHURAKSHI</h1>
+</div>
+
+<!-- DESKTOP MENU -->
 <div class="hidden md:flex gap-6 text-sm">  
 <a href="#">Home</a>
 <a href="#collection">Collections</a>
 <a href="#contact">Contact</a>
 </div>
+
 </div>
 </div>
+<!-- MOBILE SIDE MENU -->
+<div id="mobileMenu" class="fixed top-0 left-0 w-72 h-full bg-white z-50 transform -translate-x-full transition-transform duration-300 shadow-lg">
+
+<!-- CLOSE BUTTON -->
+<div class="flex justify-between items-center p-5">
+<span class="text-lg font-semibold text-[#7a1f1f]">MENU</span>
+<button onclick="closeMenu()" class="text-2xl">✕</button>
+</div>
+
+<!-- MENU LINKS -->
+<div class="flex flex-col px-6 gap-6 text-[#7a1f1f] tracking-widest text-sm">
+
+<!--<a href="#">SEARCH</a>-->
+<a href="index.html">HOME</a>
+<a href="#new-collection">NEW ARRIVALS</a>
+<a href="lehengas.html">LEHENGAS</a>
+<a href="anarkali.html">ANARKALI</a>
+<a href="kurthi.html">KURTHI</a>
+<a href="contactus.html">CONTACT US</a>
+<!--<a href="#">BEST SELLERS</a>-->
+<!--<a href="#">CO-ORD SETS</a>
+<a href="#">SOLID ESSENTIALS</a>
+<a href="#">CATEGORIES</a>-->
+
+</div>
+
+<!-- BOTTOM ACCOUNT -->
+<div class="absolute bottom-6 left-6 text-[#7a1f1f] text-sm">
+ACCOUNT
+</div>
+
+</div>
+
+<!-- OVERLAY -->
+<div id="overlay" onclick="closeMenu()" class="fixed inset-0 bg-black/30 hidden z-40"></div>
 
 <!-- MOBILE MENU -->
 <!--<div id="mobileMenu" class="hidden flex-col items-center bg-white py-4 md:hidden shadow transition-all duration-300"></div>
@@ -69,7 +117,7 @@ the stories she weaves, and the elegance she becomes.-->
 </div>
 
 <!-- NEW COLLECTION -->
-<div class="max-w-7xl mx-auto px-4 md:px-6 py-10 bg-[#e8d5c4] rounded-xl overflow-hidden">
+<div id="new-collection" class="max-w-7xl mx-auto px-4 md:px-6 py-10 bg-[#e8d5c4] rounded-xl overflow-hidden"></div>
 <h2 class="heading text-xl text-center mb-6 text-red-800">New Collection ✨</h2>
 
 <div class="relative w-full overflow-hidden">
@@ -275,6 +323,17 @@ setInterval(nextSlide, 5000);
 
 // INIT
 updateSlider();
+</script>
+<script>
+function openMenu() {
+    document.getElementById("mobileMenu").classList.remove("-translate-x-full");
+    document.getElementById("overlay").classList.remove("hidden");
+}
+
+function closeMenu() {
+    document.getElementById("mobileMenu").classList.add("-translate-x-full");
+    document.getElementById("overlay").classList.add("hidden");
+}
 </script>
 
 </body>
