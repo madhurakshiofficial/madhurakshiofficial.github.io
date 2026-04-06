@@ -39,7 +39,7 @@ body { font-family: 'Poppins', sans-serif; background:#fdf6ee; }
 </div>
 
 <!-- MOBILE MENU -->
-<div id="mobileMenu" class="hidden flex-col items-center bg-white py-4 md:hidden shadow">
+<div id="mobileMenu" class="hidden flex-col items-center bg-white py-4 md:hidden shadow transition-all duration-300"></div>
 <a href="#" class="py-2">Home</a>
 <a href="#collection" class="py-2">Collections</a>
 <a href="#contact" class="py-2">Contact</a>
@@ -275,6 +275,11 @@ setInterval(nextSlide, 5000);
 
 // INIT
 updateSlider();
+</script>
+<script>
+function toggleMenu() {
+  document.getElementById("mobileMenu").classList.toggle("hidden");
+}
 </script>
 
 </body>
