@@ -1,0 +1,24 @@
+{
+  "name": "madhurakshi",
+  "version": "1.0.0",
+  "description": "<!-- **madhurakshiofficial/madhurakshiofficial** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/madhurakshiofficial/madhurakshiofficial.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/madhurakshiofficial/madhurakshiofficial/issues"
+  },
+  "homepage": "https://github.com/madhurakshiofficial/madhurakshiofficial#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  }
+}

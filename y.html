@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Madhurakshi - Products</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: sans-serif; background: #f9f9f9; color: #222; }
+    header { background: #fff; padding: 20px 40px; border-bottom: 1px solid #eee; }
+    header h1 { font-size: 1.6rem; letter-spacing: 2px; }
+    .filters { padding: 20px 40px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .filter-btn { padding: 8px 18px; border: 1px solid #ccc; border-radius: 20px;
+      background: #fff; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+    .filter-btn.active, .filter-btn:hover { background: #222; color: #fff; border-color: #222; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 24px; padding: 20px 40px 60px; }
+    .card { background: #fff; border-radius: 12px; overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07); cursor: pointer; transition: transform 0.2s; }
+    .card:hover { transform: translateY(-4px); }
+    .card img { width: 100%; height: 220px; object-fit: cover; background: #eee; }
+    .card-body { padding: 14px; }
+    .card-body h3 { font-size: 1rem; margin-bottom: 6px; }
+    .card-body .category { font-size: 0.75rem; color: #888; margin-bottom: 8px; }
+    .card-body .price { font-size: 1rem; font-weight: bold; }
+    .card-body .compare { font-size: 0.85rem; color: #aaa; text-decoration: line-through; margin-left: 8px; }
+    .badge { display: inline-block; font-size: 0.7rem; padding: 2px 8px;
+      border-radius: 10px; margin-bottom: 8px; }
+    .badge.new { background: #e8f5e9; color: #2e7d32; }
+    .badge.featured { background: #fff3e0; color: #e65100; }
+    .loading { text-align: center; padding: 80px; color: #888; font-size: 1.1rem; }
+    .error { text-align: center; padding: 80px; color: red; }
+
+    /* Modal */
+    .modal-overlay { display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: #fff; border-radius: 16px; max-width: 700px; width: 90%;
+      max-height: 85vh; overflow-y: auto; padding: 32px; position: relative; }
+    .modal-close { position: absolute; top: 16px; right: 20px; font-size: 1.5rem;
+      cursor: pointer; background: none; border: none; }
+    .modal img { width: 100%; max-height: 320px; object-fit: cover;
+      border-radius: 10px; margin-bottom: 20px; }
+    .modal h2 { font-size: 1.4rem; margin-bottom: 6px; }
+    .modal .meta { color: #888; font-size: 0.85rem; margin-bottom: 12px; }
+    .modal .desc { font-size: 0.95rem; line-height: 1.6; margin-bottom: 16px; color: #444; }
+    .modal .price-row { font-size: 1.3rem; font-weight: bold; margin-bottom: 16px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .tag { background: #f0f0f0; border-radius: 8px; padding: 4px 10px; font-size: 0.8rem; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+    .chip { border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px;
+      font-size: 0.8rem; background: #fafafa; }
+    .stock { font-size: 0.85rem; margin-top: 8px; }
+    .in-stock { color: #2e7d32; } .out-stock { color: #c62828; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>MADHURAKSHI</h1>
+</header>
+
+<div class="filters">
+  <button class="filter-btn active" onclick="filterProducts('all', this)">All</button>
+  <button class="filter-btn" onclick="filterProducts('featured', this)">Featured</button>
+  <button class="filter-btn" onclick="filterProducts('new', this)">New Arrivals</button>
+</div>
+
+<div id="product-grid" class="grid">
+  <div class="loading">Loading products...</div>
+</div>
+
+<!-- Product Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-content">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+  const { createClient } = supabase;
+  const client = createClient(
+    'https://cvhepeydpmxmwjmenrqz.supabase.co',
+    'YOUR_ANON_PUBLIC_KEY'
+  );
+
+  let allProducts = [];
+
+  // Fetch all products with category on page load
+  async function loadProducts() {
+    const { data, error } = await client
+      .from('products')
+      .select(`*, categories(name, slug)`)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      document.getElementById('product-grid').innerHTML =
+        `<div class="error">Failed to load products: ${error.message}</div>`;
+      return;
+    }
+
+    allProducts = data;
+    renderProducts(data);
+  }
+
+  // Render product cards
+  function renderProducts(products) {
+    const grid = document.getElementById('product-grid');
+    if (products.length === 0) {
+      grid.innerHTML = '<div class="loading">No products found.</div>';
+      return;
+    }
+
+    grid.innerHTML = products.map(p => {
+      const image = p.images?.[0] || 'https://placehold.co/400x300?text=No+Image';
+      const badge = p.is_new_arrival
+        ? '<span class="badge new">New</span>'
+        : p.is_featured
+        ? '<span class="badge featured">Featured</span>'
+        : '';
+      const comparePrice = p.compare_price
+        ? `<span class="compare">₹${p.compare_price}</span>` : '';
+
+      return `
+        <div class="card" onclick="openModal('${p.id}')">
+          <img src="${image}" alt="${p.name}" onerror="this.src='https://placehold.co/400x300?text=No+Image'"/>
+          <div class="card-body">
+            ${badge}
+            <div class="category">${p.categories?.name || 'Uncategorized'}</div>
+            <h3>${p.name}</h3>
+            <div class="price">₹${p.price} ${comparePrice}</div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // Filter buttons
+  function filterProducts(type, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    if (type === 'all') renderProducts(allProducts);
+    else if (type === 'featured') renderProducts(allProducts.filter(p => p.is_featured));
+    else if (type === 'new') renderProducts(allProducts.filter(p => p.is_new_arrival));
+  }
+
+  // Open product detail modal
+  async function openModal(productId) {
+    document.getElementById('modal-overlay').classList.add('open');
+    document.getElementById('modal-body').innerHTML = '<div class="loading">Loading...</div>';
+
+    const { data: p, error } = await client
+      .from('products')
+      .select(`*, categories(name, slug), reviews(rating, title, body)`)
+      .eq('id', productId)
+      .single();
+
+    if (error) {
+      document.getElementById('modal-body').innerHTML = '<div class="error">Failed to load product.</div>';
+      return;
+    }
+
+    const image = p.images?.[0] || 'https://placehold.co/600x400?text=No+Image';
+    const comparePrice = p.compare_price
+      ? `<span class="compare">₹${p.compare_price}</span>` : '';
+    const sizes = p.sizes?.length
+      ? `<div><strong>Sizes:</strong><div class="chips">${p.sizes.map(s => `<span class="chip">${s}</span>`).join('')}</div></div>` : '';
+    const colors = p.colors?.length
+      ? `<div><strong>Colors:</strong><div class="chips">${p.colors.map(c => `<span class="chip">${c}</span>`).join('')}</div></div>` : '';
+    const tags = p.tags?.length
+      ? `<div class="tags">${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>` : '';
+    const stock = p.stock > 0
+      ? `<div class="stock in-stock">✓ In Stock (${p.stock} available)</div>`
+      : `<div class="stock out-stock">✗ Out of Stock</div>`;
+    const avgRating = p.reviews?.length
+      ? (p.reviews.reduce((a, r) => a + r.rating, 0) / p.reviews.length).toFixed(1)
+      : null;
+    const ratingHtml = avgRating
+      ? `<span>⭐ ${avgRating} (${p.reviews.length} reviews)</span>` : '';
+
+    document.getElementById('modal-body').innerHTML = `
+      <img src="${image}" alt="${p.name}" onerror="this.src='https://placehold.co/600x400?text=No+Image'"/>
+      <h2>${p.name}</h2>
+      <div class="meta">${p.categories?.name || ''} ${ratingHtml}</div>
+      <div class="price-row">₹${p.price} ${comparePrice}</div>
+      <div class="desc">${p.description || 'No description available.'}</div>
+      ${sizes}
+      ${colors}
+      ${stock}
+      ${tags}
+    `;
+  }
+
+  function closeModal(event) {
+    if (!event || event.target === document.getElementById('modal-overlay')) {
+      document.getElementById('modal-overlay').classList.remove('open');
+    }
+  }
+
+  // Load on page start
+  loadProducts();
+</script>
+</body>
+</html>

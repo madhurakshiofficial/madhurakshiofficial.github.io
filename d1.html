@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>High Slit Kurti| Madhurakshi</title>
+<title>Aavya Dress| Madhurakshi</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
@@ -84,7 +84,7 @@
   /* Main slide area */
   .slide-track-container {
     width: 100%;
-    aspect-ratio: 9/16;
+    aspect-ratio: 4/5;
     border-radius: 16px;
     overflow: hidden;
     background: #f0e6d8;
@@ -349,7 +349,7 @@
 <!-- HEADER -->
 <header>
   <h1 class="logo-text">MADHURAKSHI</h1>
-  <a href="kurthi.html" class="back-link">← Back to Collection</a>
+  <a href="dresses.html" class="back-link">← Back to Collection</a>
 </header>
 
 <!-- PRODUCT SECTION -->
@@ -366,9 +366,10 @@
       <button class="arrow arrow-right" onclick="nextSlide()" aria-label="Next">&#8250;</button>
 
       <div class="slide-track" id="slideTrack">
-        <div class="slide"><img src="frontendimages/kurti/k2-1.png" alt="High Slit kurti - Front"></div>
-        <div class="slide"><img src="frontendimages/kurti/k2-2.png" alt="High Slit kurti - Detail"></div>
-        <div class="slide"><img src="frontendimages/kurti/k2-3.png" alt="High Slit kurti - Side"></div>
+        <div class="slide"><img src="frontendimages/dresses/g-a-1.jpeg" alt="Pastel Pink Anarkali - Front"></div>
+        <div class="slide"><img src="frontendimages/dresses/g-a-2.jpeg" alt="Pastel Pink Anarkali - Detail"></div>
+        <div class="slide"><img src="frontendimages/dresses/g-a-3.jpeg" alt="Pastel Pink Anarkali - Side"></div>
+        <div class="slide"><img src="frontendimages/dresses/g-a-4.jpeg" alt="Pastel Pink Anarkali - Back"></div>
       </div>
     </div>
 
@@ -377,16 +378,19 @@
 
     <!-- Thumbnails -->
     <div class="thumbs" id="thumbs">
-      <div class="thumb active" onclick="goToSlide(0)"><img src="frontendimages/kurti/k2-1.png" alt="1"></div>
-      <div class="thumb" onclick="goToSlide(1)"><img src="frontendimages/kurti/k2-2.png" alt="2"></div>
-      <div class="thumb" onclick="goToSlide(2)"><img src="frontendimages/kurti/k2-3.png" alt="3"></div>
+      <div class="thumb active" onclick="goToSlide(0)"><img src="frontendimages/dresses/g-a-1.jpeg" alt="1"></div>
+      <div class="thumb" onclick="goToSlide(1)"><img src="frontendimages/dresses/g-a-2.jpeg" alt="2"></div>
+      <div class="thumb" onclick="goToSlide(2)"><img src="frontendimages/dresses/g-a-3.jpeg" alt="3"></div>
+      <div class="thumb" onclick="goToSlide(3)"><img src="frontendimages/dresses/g-a-4.jpeg" alt="4"></div>
     </div>
   </div>
 
   <!-- RIGHT: DETAILS -->
   <div class="product-details">
-    <!--<span class="product-badge">✦ New Arrival · Limited Pieces</span>-->
-    <h1 class="product-title">High Slit<br>Kurti</h1>
+    <span class="product-badge">✦ New Arrival · Limited Pieces</span>
+    <p class="product-title">Grishma Collection</p>
+
+    <h1 class="product-title">Aavya Butter Yellow Dress</h1>
 
     <div class="divider"></div>
     <!-- SIZE BAR -->
@@ -582,39 +586,35 @@ window.onclick=function(e){
 }
 </script>
 <br>
-    <!--<p>High slit kurti</p>-->
 
   <div class="price-line">
-    <span class="price">₹2,999.00</span>
+    <span class="price">₹3,199.00</span>
     <span class="price-note">Inclusive of all taxes</span>
   </div>
 
 <br>
- <b><i>Model is wearing M.</i></b>
+ <b><i>Model is wearing XS.</i></b>
     <p class="product-desc">
-      A white high-slit kurti made of pure georgette with a self-color embroidered yoke.
-       It features a side bandhani knot with heavy handwork, including shells and small motifs, 
-       which took six hours to complete.
+      This butter-yellow cotton midi dress features artisanal, hand-painted flowers and butterflies across a breathable silhouette. A structured corset back cinches the waist, flowing into a graceful mid-calf skirt for a blend of romantic detail and timeless style.
     </p>
-    <b>Sleeves provided inside for optional stitching.</b>
- <br>
-
+<!--<b>Sleeves provided inside for optional stitching.</b>-->
+<br>
     <div class="specs">
       <div class="spec-item">
         <div class="spec-label">Fabric</div>
-        <div class="spec-value">Pure Georgette</div>
+        <div class="spec-value">Cotton</div>
       </div>
       <div class="spec-item">
         <div class="spec-label">Work</div>
-        <div class="spec-value">Hand Work</div>
+        <div class="spec-value">Hand Painting</div>
       </div>
       <div class="spec-item">
         <div class="spec-label">Color</div>
-        <div class="spec-value">White</div>
+        <div class="spec-value">Butter Yellow</div>
       </div>
       <div class="spec-item">
         <div class="spec-label">Style</div>
-        <div class="spec-value">High Slit</div>
+        <div class="spec-value">Midi Dress</div>
       </div>
     </div>
 
@@ -631,7 +631,7 @@ window.onclick=function(e){
 </div>
 
 <script>
-const total = 3;
+const total = 4;
 let current = 0;
 let startX = 0;
 let isDragging = false;

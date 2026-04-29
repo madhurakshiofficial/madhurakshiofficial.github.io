@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard - Madhurakshi</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-100">
+
+<div class="max-w-6xl mx-auto p-6">
+
+<h1 class="text-2xl font-bold mb-6 text-red-800">Admin Dashboard</h1>
+
+<!-- FORM -->
+<div class="bg-white p-6 rounded shadow mb-8">
+<h2 class="text-lg font-semibold mb-4">Add / Edit Product</h2>
+
+<input id="name" placeholder="Name" class="border p-2 w-full mb-2">
+<input id="price" placeholder="Price" type="number" class="border p-2 w-full mb-2">
+<input id="category" placeholder="Category" class="border p-2 w-full mb-2">
+<input id="color" placeholder="Color" class="border p-2 w-full mb-2">
+<input id="image" placeholder="Image URL" class="border p-2 w-full mb-2">
+
+<button onclick="saveProduct()" class="bg-red-800 text-white px-4 py-2 rounded w-full">
+Save Product
+</button>
+</div>
+
+<!-- PRODUCT LIST -->
+<div id="productList" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+
+</div>
+
+<script>
+const supabaseUrl = 'https://cvhepeydpmxmwjmenrqz.supabase.co';
+const supabaseKey = 'sb_publishable_abcuiG8cYZ2-mVgrSBNEfw_5uZszN-U';
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+let editId = null;
+
+async function loadProducts() {
+    const { data, error } = await supabaseClient.from('products').select('*');
+    if (error) return console.error(error);
+
+    const container = document.getElementById('productList');
+    container.innerHTML = '';
+
+    data.forEach(p => {
+        container.innerHTML += `
+        <div class="bg-white p-4 rounded shadow">
+            <img src="${p.image}" class="h-48 w-full object-cover rounded mb-2">
+            <h2 class="font-semibold">${p.name}</h2>
+            <p>₹${p.price}</p>
+            <div class="flex gap-2 mt-3">
+                <button onclick="editProduct('${p.id}')" class="bg-yellow-500 text-white px-3 py-1 rounded">Edit</button>
+                <button onclick="deleteProduct('${p.id}')" class="bg-red-600 text-white px-3 py-1 rounded">Delete</button>
+            </div>
+        </div>`;
+    });
+}
+
+async function saveProduct() {
+    const product = {
+        name: document.getElementById('name').value,
+        price: parseFloat(document.getElementById('price').value),
+        category: document.getElementById('category').value,
+        color: document.getElementById('color').value,
+        image: document.getElementById('image').value,
+    };
+
+    if (editId) {
+        await supabaseClient.from('products').update(product).eq('id', editId);
+        editId = null;
+    } else {
+        await supabaseClient.from('products').insert([product]);
+    }
+
+    clearForm();
+    loadProducts();
+}
+
+async function editProduct(id) {
+    const { data } = await supabaseClient.from('products').select('*').eq('id', id).single();
+
+    document.getElementById('name').value = data.name;
+    document.getElementById('price').value = data.price;
+    document.getElementById('category').value = data.category;
+    document.getElementById('color').value = data.color;
+    document.getElementById('image').value = data.image;
+    
+    editId = id;
+}
+
+async function deleteProduct(id) {
+    if (!confirm('Delete this product?')) return;
+
+    await supabaseClient.from('products').delete().eq('id', id);
+    loadProducts();
+}
+
+function clearForm() {
+    document.querySelectorAll('input').forEach(i => i.value = '');
+}
+
+loadProducts();
+</script>
+
+</body>
+</html>

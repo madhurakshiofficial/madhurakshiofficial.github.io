@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="/supabase.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Madhurakshi — Where Tradition Meets Elegance</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --crimson:   #8b0000;
+  --crimson-d: #5a0000;
+  --gold:      #c9a86c;
+  --gold-l:    #e8d5b0;
+  --cream:     #fdf8f2;
+  --warm-bg:   #f9f3eb;
+  --ink:       #1a1008;
+  --muted:     #6b5744;
+  --border:    rgba(139,0,0,0.12);
+  --sans:      'Jost', sans-serif;
+  --serif:     'Cormorant Garamond', serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--cream);
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+/* ── PROMO BAR ── */
+.promo-bar {
+  background: var(--crimson);
+  color: #fff;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 2px;
+  padding: 10px 16px;
+  font-family: var(--sans);
+  font-weight: 400;
+}
+.promo-bar span { color: var(--gold-l); font-weight: 500; }
+
+/* ── NAVBAR ── */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--cream);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-top {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
+  height: 70px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+
+.nav-left { display: flex; align-items: center; gap: 12px; }
+
+.nav-search-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 2px;
+}
+.nav-search-form input {
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink);
+  width: 160px;
+  letter-spacing: 0.5px;
+}
+.nav-search-form input::placeholder { color: var(--muted); }
+.nav-search-form svg { flex-shrink: 0; }
+
+.logo {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  color: var(--crimson);
+  text-decoration: none;
+  text-align: center;
+  line-height: 1;
+}
+.logo small {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--gold);
+  font-weight: 400;
+  margin-top: 2px;
+  font-family: var(--sans);
+  text-transform: uppercase;
+}
+
+.nav-right { display: flex; align-items: center; justify-content: flex-end; gap: 24px; }
+
+.nav-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--ink);
+  position: relative;
+}
+.nav-icon svg { stroke: var(--ink); }
+.nav-icon span {
+  font-size: 10px;
+  letter-spacing: 1px;
+  font-weight: 400;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.nav-icon:hover svg { stroke: var(--crimson); }
+.nav-icon:hover span { color: var(--crimson); }
+
+.cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: var(--crimson);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 600;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  display: none;
+}
+
+/* NAV BOTTOM — category links */
+.nav-bottom {
+  border-top: 1px solid var(--border);
+  background: #fff;
+}
+.nav-links {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.nav-link {
+  padding: 14px 20px;
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+  text-transform: uppercase;
+  position: relative;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: var(--crimson);
+  transform: scaleX(0);
+  transition: transform 0.25s ease;
+}
+.nav-link:hover { color: var(--crimson); }
+.nav-link:hover::after { transform: scaleX(1); }
+.nav-link.new { color: var(--crimson); }
+
+/* ── HERO ── */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - 120px);
+  max-height: 800px;
+  overflow: hidden;
+}
+
+.hero-image {
+  position: relative;
+  overflow: hidden;
+}
+.hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  transition: transform 8s ease;
+}
+.hero:hover .hero-image img { transform: scale(1.04); }
+
+.hero-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, transparent 60%, var(--cream) 100%);
+}
+
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 60px 80px 40px;
+  background: var(--cream);
+}
+
+.hero-eyebrow {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 40px;
+  height: 1px;
+  background: var(--gold);
+}
+
+.hero-title {
+  font-family: var(--serif);
+  font-size: clamp(44px, 5vw, 68px);
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: 24px;
+}
+.hero-title em {
+  color: var(--crimson);
+  font-style: italic;
+}
+
+.hero-subtitle {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.8;
+  max-width: 360px;
+  margin-bottom: 40px;
+  letter-spacing: 0.3px;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  background: var(--crimson);
+  color: #fff;
+  padding: 14px 36px;
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-family: var(--sans);
+  font-weight: 500;
+  transition: background 0.2s, transform 0.15s;
+  display: inline-block;
+}
+.btn-primary:hover { background: var(--crimson-d); transform: translateY(-1px); }
+
+.btn-secondary {
+  color: var(--ink);
+  padding: 14px 36px;
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-family: var(--sans);
+  font-weight: 500;
+  border: 1px solid var(--ink);
+  transition: all 0.2s;
+  display: inline-block;
+}
+.btn-secondary:hover { background: var(--ink); color: #fff; }
+
+.hero-stats {
+  display: flex;
+  gap: 40px;
+  margin-top: 56px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+.stat-item {}
+.stat-num {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--crimson);
+  line-height: 1;
+}
+.stat-label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* ── MARQUEE ── */
+.marquee-wrap {
+  background: var(--crimson);
+  padding: 12px 0;
+  overflow: hidden;
+}
+.marquee {
+  display: flex;
+  gap: 0;
+  animation: marquee 20s linear infinite;
+  width: max-content;
+}
+.marquee-item {
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.8);
+  padding: 0 40px;
+  font-family: var(--sans);
+  white-space: nowrap;
+}
+.marquee-item span { color: var(--gold-l); }
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ── SECTION HEADER ── */
+.section-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.section-eyebrow {
+  font-size: 10px;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.section-eyebrow::before, .section-eyebrow::after {
+  content: '';
+  width: 32px;
+  height: 1px;
+  background: var(--gold);
+}
+.section-title {
+  font-family: var(--serif);
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 300;
+  color: var(--ink);
+  line-height: 1.15;
+}
+.section-title em { color: var(--crimson); font-style: italic; }
+.section-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 12px;
+  letter-spacing: 0.3px;
+}
+
+/* ── CATEGORIES ── */
+.categories-section {
+  padding: 80px 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 480px;
+  gap: 12px;
+}
+
+.cat-card {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  text-decoration: none;
+  background: var(--warm-bg);
+}
+.cat-card:nth-child(2), .cat-card:nth-child(3) {
+  display: grid;
+  grid-row: span 1;
+}
+.cat-card-right {
+  grid-column: 3;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 12px;
+}
+
+.cat-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  transition: transform 0.6s ease;
+}
+.cat-card:hover .cat-img { transform: scale(1.04); }
+
+.cat-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(26,16,8,0.65) 0%, transparent 55%);
+}
+.cat-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 28px;
+}
+.cat-label {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold-l);
+  font-family: var(--sans);
+  display: block;
+  margin-bottom: 6px;
+}
+.cat-name {
+  font-family: var(--serif);
+  font-size: 32px;
+  font-weight: 300;
+  color: #fff;
+  line-height: 1;
+  display: block;
+}
+.cat-card-small .cat-name { font-size: 22px; }
+.cat-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #fff;
+  font-family: var(--sans);
+  border-bottom: 1px solid rgba(255,255,255,0.4);
+  padding-bottom: 2px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: all 0.3s;
+}
+.cat-card:hover .cat-cta { opacity: 1; transform: translateY(0); }
+
+/* ── NEW ARRIVALS ── */
+.arrivals-section {
+  padding: 80px 40px;
+  background: #fff;
+}
+.arrivals-inner { max-width: 1400px; margin: 0 auto; }
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.product-card {
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+.product-img-wrap {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  background: var(--warm-bg);
+  margin-bottom: 14px;
+}
+.product-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  transition: transform 0.5s ease;
+}
+.product-card:hover .product-img-wrap img { transform: scale(1.05); }
+
+.product-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: var(--crimson);
+  color: #fff;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  font-family: var(--sans);
+  font-weight: 500;
+}
+.product-badge.new { background: var(--ink); }
+
+.product-quick-wish {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.25s;
+  border: none;
+}
+.product-card:hover .product-quick-wish {
+  opacity: 1;
+  transform: scale(1);
+}
+.product-quick-wish:hover svg { stroke: var(--crimson); }
+
+.product-name {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+.product-meta {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+.product-price {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.price-now {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--crimson);
+  font-family: var(--sans);
+}
+.price-was {
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.view-all-wrap {
+  text-align: center;
+  margin-top: 48px;
+}
+
+/* ── EDITORIAL BANNER ── */
+.editorial {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 500px;
+  margin: 0;
+}
+.editorial-img {
+  overflow: hidden;
+  position: relative;
+}
+.editorial-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+.editorial-content {
+  background: var(--crimson);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px;
+}
+.editorial-content .section-eyebrow { color: var(--gold-l); justify-content: flex-start; }
+.editorial-content .section-eyebrow::before { background: var(--gold-l); }
+.editorial-content .section-eyebrow::after { display: none; }
+.editorial-title {
+  font-family: var(--serif);
+  font-size: clamp(36px, 4vw, 56px);
+  font-weight: 300;
+  color: #fff;
+  line-height: 1.1;
+  margin: 16px 0 24px;
+}
+.editorial-title em { color: var(--gold-l); font-style: italic; }
+.editorial-body {
+  font-size: 14px;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.9;
+  max-width: 380px;
+  margin-bottom: 36px;
+}
+.btn-light {
+  display: inline-block;
+  border: 1px solid rgba(255,255,255,0.5);
+  color: #fff;
+  padding: 14px 36px;
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-family: var(--sans);
+  font-weight: 500;
+  transition: all 0.2s;
+  width: fit-content;
+}
+.btn-light:hover { background: #fff; color: var(--crimson); }
+
+/* ── FEATURES STRIP ── */
+.features-strip {
+  padding: 56px 40px;
+  background: var(--warm-bg);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.features-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+  text-align: center;
+}
+.feature-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 16px;
+  stroke: var(--crimson);
+}
+.feature-title {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.feature-desc { font-size: 12px; color: var(--muted); letter-spacing: 0.3px; line-height: 1.7; }
+
+/* ── TESTIMONIALS ── */
+.testimonials-section {
+  padding: 80px 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  text-align: center;
+}
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-top: 48px;
+}
+.testimonial-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 36px 32px;
+  text-align: left;
+}
+.stars {
+  color: var(--gold);
+  font-size: 14px;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+}
+.testimonial-text {
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--ink);
+  font-style: italic;
+  margin-bottom: 20px;
+}
+.testimonial-author {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.testimonial-location {
+  font-size: 11px;
+  color: var(--gold);
+  margin-top: 4px;
+}
+
+/* ── INSTAGRAM ── */
+.instagram-section {
+  padding: 80px 40px;
+  background: var(--warm-bg);
+}
+.instagram-inner { max-width: 1400px; margin: 0 auto; }
+
+.instagram-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-top: 48px;
+}
+.ig-item {
+  aspect-ratio: 1;
+  overflow: hidden;
+  position: relative;
+  background: var(--cream);
+  cursor: pointer;
+}
+.ig-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.ig-item:hover img { transform: scale(1.07); }
+.ig-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(139,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.ig-item:hover .ig-overlay { opacity: 1; }
+.ig-overlay svg { stroke: #fff; width: 28px; height: 28px; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--ink);
+  color: rgba(255,255,255,0.75);
+}
+.footer-top {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 72px 40px 56px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: 60px;
+}
+.footer-brand .logo {
+  color: #fff;
+  display: block;
+  margin-bottom: 20px;
+  text-align: left;
+}
+.footer-brand .logo small { color: var(--gold); }
+.footer-tagline {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-style: italic;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.8;
+  margin-bottom: 28px;
+}
+.footer-social { display: flex; gap: 14px; }
+.social-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.social-btn:hover { border-color: var(--gold); }
+.social-btn:hover svg { stroke: var(--gold); }
+
+.footer-col h4 {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+  font-family: var(--sans);
+  font-weight: 500;
+}
+.footer-links { list-style: none; }
+.footer-links li { margin-bottom: 12px; }
+.footer-links a {
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 0.3px;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: #fff; }
+
+.newsletter-text { font-size: 13px; line-height: 1.7; margin-bottom: 20px; color: rgba(255,255,255,0.6); }
+.newsletter-form { display: flex; }
+.newsletter-form input {
+  flex: 1;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-right: none;
+  padding: 12px 16px;
+  font-family: var(--sans);
+  font-size: 12px;
+  color: #fff;
+  outline: none;
+}
+.newsletter-form input::placeholder { color: rgba(255,255,255,0.35); }
+.newsletter-form button {
+  background: var(--crimson);
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.newsletter-form button:hover { background: var(--crimson-d); }
+
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 24px 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+}
+.footer-bottom a { color: rgba(255,255,255,0.35); text-decoration: none; }
+.footer-bottom a:hover { color: rgba(255,255,255,0.6); }
+.footer-bottom-links { display: flex; gap: 24px; }
+
+/* ── SEARCH RESULTS ── */
+#searchResultsSection {
+  display: none;
+  padding: 60px 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+#searchResultsSection h2 {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 300;
+  margin-bottom: 32px;
+  color: var(--ink);
+}
+#searchResultsSection h2 em { color: var(--crimson); font-style: normal; }
+#searchGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+
+/* ── MOBILE MENU ── */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 300px; height: 100%;
+  background: #fff;
+  z-index: 999;
+  transform: translateX(-100%);
+  transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+  flex-direction: column;
+}
+.mobile-menu.open { transform: translateX(0); }
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 998;
+}
+.mobile-menu-head {
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+.mobile-menu-links { padding: 24px; flex: 1; }
+.mobile-menu-links a {
+  display: block;
+  padding: 14px 0;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border);
+}
+.mobile-menu-links a.red { color: var(--crimson); }
+.menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1100px) {
+  .nav-top { padding: 0 24px; }
+  .nav-links { padding: 0 24px; }
+  .hero-content { padding: 60px 40px 60px 32px; }
+  .category-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+  .cat-card-right { grid-column: auto; grid-template-rows: auto; gap: 12px; display: grid; }
+  .products-grid { grid-template-columns: repeat(3, 1fr); }
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
+}
+
+@media (max-width: 768px) {
+  .nav-top { padding: 0 16px; height: 60px; }
+  .nav-search-form { display: none; }
+  .nav-bottom { display: none; }
+  .menu-btn { display: block; }
+  .mobile-menu { display: flex; }
+
+  .hero { grid-template-columns: 1fr; min-height: auto; max-height: none; }
+  .hero-image { height: 60vw; max-height: 360px; }
+  .hero-image-overlay { background: none; }
+  .hero-content { padding: 40px 24px; }
+  .hero-stats { gap: 24px; }
+  .hero-cta { flex-direction: column; }
+  .btn-primary, .btn-secondary { text-align: center; padding: 14px 24px; }
+
+  .categories-section { padding: 48px 16px; }
+  .category-grid { grid-template-columns: 1fr; grid-template-rows: auto; height: auto; }
+  .cat-card { height: 280px; }
+  .cat-card-right { grid-column: auto; display: contents; }
+
+  .arrivals-section { padding: 48px 16px; }
+  .products-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+
+  .editorial { grid-template-columns: 1fr; }
+  .editorial-img { height: 300px; }
+  .editorial-content { padding: 48px 24px; }
+
+  .features-strip { padding: 40px 16px; }
+  .features-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+
+  .testimonials-section { padding: 48px 16px; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+
+  .instagram-section { padding: 48px 16px; }
+  .instagram-grid { grid-template-columns: repeat(3, 1fr); }
+
+  .footer-top { grid-template-columns: 1fr; gap: 36px; padding: 48px 16px 40px; }
+  .footer-bottom { padding: 20px 16px; flex-direction: column; gap: 12px; text-align: center; }
+  .footer-bottom-links { flex-wrap: wrap; justify-content: center; }
+
+  #searchResultsSection { padding: 40px 16px; }
+  #searchGrid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+}
+
+/* ── ANIMATIONS ── */
+.fade-up {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+</head>
+<body>
+
+<!-- PROMO BAR -->
+<div class="promo-bar">
+  Free shipping on orders above <span>₹999</span> &nbsp;·&nbsp; Use code <span>FIRST10</span> for 10% off your first order
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-top">
+    <!-- LEFT: Search + Hamburger -->
+    <div class="nav-left">
+      <button class="menu-btn" onclick="openMobileMenu()" aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+      <div class="nav-search-form">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b5744" stroke-width="1.5">
+          <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search styles, fabrics…" onkeyup="handleSearch()" />
+      </div>
+    </div>
+
+    <!-- CENTER: Logo -->
+    <a href="indexca.html" class="logo">
+      MADHURAKSHI
+      <small>Est. 2024</small>
+    </a>
+
+    <!-- RIGHT: Icons -->
+    <div class="nav-right">
+      <a href="account.html" class="nav-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span id="nav-account-label">Account</span>
+      </a>
+      <a href="wishlist.html" class="nav-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+        <span>Wishlist</span>
+      </a>
+      <a href="cart.html" class="nav-icon">
+        <div style="position:relative">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          <span class="cart-badge" id="cartBadge">0</span>
+        </div>
+        <span>Bag</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- NAV LINKS -->
+  <div class="nav-bottom">
+    <div class="nav-links">
+      <a href="indexca.html" class="nav-link">Home</a>
+      <a href="#" class="nav-link new">New Arrivals</a>
+      <a href="lehengas.html" class="nav-link">Lehengas</a>
+      <a href="anarkali.html" class="nav-link">Anarkali</a>
+      <a href="kurthi.html" class="nav-link">Kurtis</a>
+      <a href="#" class="nav-link">Festive Edit</a>
+      <a href="contactus.html" class="nav-link">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-menu-head">
+    <span class="logo" style="font-size:18px">MADHURAKSHI</span>
+    <button onclick="closeMobileMenu()" style="background:none;border:none;cursor:pointer;font-size:22px;color:#555">✕</button>
+  </div>
+  <div class="mobile-menu-links">
+    <a href="indexca.html">Home</a>
+    <a href="#" class="red">New Arrivals</a>
+    <a href="lehengas.html">Lehengas</a>
+    <a href="anarkali.html">Anarkali</a>
+    <a href="kurthi.html">Kurtis</a>
+    <a href="#" class="red">Festive Edit</a>
+    <a href="wishlist.html">Wishlist</a>
+    <a href="cart.html">My Bag</a>
+    <a href="account.html">Account</a>
+    <a href="contactus.html">Contact</a>
+  </div>
+</div>
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileMenu()"></div>
+
+<!-- SEARCH RESULTS (shown when searching) -->
+<div id="searchResultsSection">
+  <h2>Results for &ldquo;<em id="searchTerm"></em>&rdquo;</h2>
+  <div id="searchGrid"></div>
+</div>
+
+<!-- MAIN CONTENT (hidden when searching) -->
+<main id="mainContent">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-image">
+    <img src="frontendimages/lehengas/l2-1.png" alt="Madhurakshi Collection"/>
+    <div class="hero-image-overlay"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">New Season 2026</div>
+    <h1 class="hero-title">
+      The Art of<br>
+      <em>Timeless</em><br>
+      Indian Grace
+    </h1>
+    <p class="hero-subtitle">
+      Handpicked silhouettes in heirloom fabrics — crafted for the woman who
+      carries tradition with modern confidence.
+    </p>
+    <div class="hero-cta">
+      <a href="#collection" class="btn-primary">Explore Collection</a>
+      <a href="lehengas.html" class="btn-secondary">View Lehengas</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">200+</div>
+        <div class="stat-label">Styles</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Handcrafted</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">5000+</div>
+        <div class="stat-label">Happy Brides</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee">
+    <span class="marquee-item">New <span>Festive Edit</span></span>
+    <span class="marquee-item">Free Shipping Above <span>₹999</span></span>
+    <span class="marquee-item">Handwoven <span>Silk Lehengas</span></span>
+    <span class="marquee-item">Block Printed <span>Anarkalis</span></span>
+    <span class="marquee-item">Complimentary <span>Alterations</span></span>
+    <span class="marquee-item">New <span>Festive Edit</span></span>
+    <span class="marquee-item">Free Shipping Above <span>₹999</span></span>
+    <span class="marquee-item">Handwoven <span>Silk Lehengas</span></span>
+    <span class="marquee-item">Block Printed <span>Anarkalis</span></span>
+    <span class="marquee-item">Complimentary <span>Alterations</span></span>
+  </div>
+</div>
+
+<!-- SHOP BY COLLECTION -->
+<section class="categories-section fade-up" id="collection">
+  <div class="section-header">
+    <div class="section-eyebrow">Curated for You</div>
+    <h2 class="section-title">Shop by <em>Collection</em></h2>
+    <p class="section-sub">Each piece tells a story of artistry and heritage.</p>
+  </div>
+
+  <div class="category-grid">
+    <!-- LEHENGA — large left -->
+    <a href="lehengas.html" class="cat-card">
+      <img src="frontendimages/lehengas/l1-1.png" alt="Lehengas" class="cat-img"/>
+      <div class="cat-overlay"></div>
+      <div class="cat-info">
+        <span class="cat-label">The Bridal Dream</span>
+        <span class="cat-name">Lehengas</span>
+        <div class="cat-cta">Explore →</div>
+      </div>
+    </a>
+
+    <!-- ANARKALI — top right -->
+    <a href="anarkali.html" class="cat-card cat-card-small">
+      <img src="frontendimages/anarkali/a1-1.png" alt="Anarkali" class="cat-img"/>
+      <div class="cat-overlay"></div>
+      <div class="cat-info">
+        <span class="cat-label">Timeless Silhouettes</span>
+        <span class="cat-name">Anarkali</span>
+        <div class="cat-cta">Explore →</div>
+      </div>
+    </a>
+
+    <!-- RIGHT COLUMN: Kurtis -->
+    <div class="cat-card-right">
+      <a href="kurthi.html" class="cat-card cat-card-small" style="height:100%">
+        <img src="frontendimages/kurti/k1-1.png" alt="Kurtis" class="cat-img"/>
+        <div class="cat-overlay"></div>
+        <div class="cat-info">
+          <span class="cat-label">Everyday Elegance</span>
+          <span class="cat-name">Kurtis</span>
+          <div class="cat-cta">Explore →</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- NEW ARRIVALS -->
+<section class="arrivals-section">
+  <div class="arrivals-inner">
+    <div class="section-header fade-up">
+      <div class="section-eyebrow">Just In</div>
+      <h2 class="section-title">New <em>Arrivals</em></h2>
+    </div>
+
+    <div class="products-grid" id="newArrivalsGrid">
+      <!-- Populated by JS from Supabase -->
+      <!-- Static fallbacks below -->
+      <a href="l2.html" class="product-card">
+        <div class="product-img-wrap">
+          <img src="frontendimages/lehengas/l2-1.png" alt="Block Printed Lehenga" loading="lazy"/>
+          <span class="product-badge new">New</span>
+          <button class="product-quick-wish" onclick="event.preventDefault(); wishlistClick('l2')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8b0000" stroke-width="1.5">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="product-name">Block Printed Pastel Blue Lehenga</div>
+        <div class="product-meta">Handblock · Rajasthani Cotton</div>
+        <div class="product-price">
+          <span class="price-now">₹8,499</span>
+          <span class="price-was">₹10,999</span>
+        </div>
+      </a>
+
+      <a href="a1.html" class="product-card">
+        <div class="product-img-wrap">
+          <img src="frontendimages/anarkali/a1-1.png" alt="Pastel Pink Anarkali" loading="lazy"/>
+          <span class="product-badge new">New</span>
+          <button class="product-quick-wish" onclick="event.preventDefault(); wishlistClick('a1')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8b0000" stroke-width="1.5">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="product-name">Pastel Pink Anarkali Suit</div>
+        <div class="product-meta">Georgette · Embroidered</div>
+        <div class="product-price">
+          <span class="price-now">₹5,999</span>
+        </div>
+      </a>
+
+      <a href="lehengas.html" class="product-card">
+        <div class="product-img-wrap">
+          <img src="frontendimages/lehengas/l1-1.png" alt="Rose Silk Lehenga" loading="lazy"/>
+          <button class="product-quick-wish" onclick="event.preventDefault(); wishlistClick('l1')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8b0000" stroke-width="1.5">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="product-name">Rose Silk Bridal Lehenga</div>
+        <div class="product-meta">Pure Silk · Zardozi Work</div>
+        <div class="product-price">
+          <span class="price-now">₹14,999</span>
+          <span class="price-was">₹18,500</span>
+        </div>
+      </a>
+
+      <a href="kurthi.html" class="product-card">
+        <div class="product-img-wrap">
+          <img src="frontendimages/kurti/k1-1.png" alt="Kurti" loading="lazy"/>
+          <button class="product-quick-wish" onclick="event.preventDefault(); wishlistClick('k1')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8b0000" stroke-width="1.5">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="product-name">Mirror Work Cotton Kurti Set</div>
+        <div class="product-meta">Cotton · Mirror Embroidery</div>
+        <div class="product-price">
+          <span class="price-now">₹2,499</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="view-all-wrap fade-up">
+      <a href="lehengas.html" class="btn-secondary">View All New Arrivals</a>
+    </div>
+  </div>
+</section>
+
+<!-- EDITORIAL BANNER -->
+<section class="editorial fade-up">
+  <div class="editorial-img">
+    <img src="frontendimages/anarkali/a1-1.png" alt="Festive Edit"/>
+  </div>
+  <div class="editorial-content">
+    <div class="section-eyebrow">Limited Edition</div>
+    <h2 class="editorial-title">
+      The <em>Festive</em><br>Edit 2026
+    </h2>
+    <p class="editorial-body">
+      Our most celebrated collection yet — handwoven silks, 
+      block-printed cottons, and embroidered masterpieces crafted 
+      for every celebration of womanhood.
+    </p>
+    <a href="#collection" class="btn-light">Discover the Edit</a>
+  </div>
+</section>
+
+<!-- FEATURES STRIP -->
+<div class="features-strip fade-up">
+  <div class="features-grid">
+    <div>
+      <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.25">
+        <path d="M5 8h14M5 8a2 2 0 1 0 0-4h14a2 2 0 1 0 0 4M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8m-9 4h4"/>
+      </svg>
+      <div class="feature-title">Free Delivery</div>
+      <div class="feature-desc">Complimentary shipping on all orders above ₹999 across India</div>
+    </div>
+    <div>
+      <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.25">
+        <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+      </svg>
+      <div class="feature-title">Easy Returns</div>
+      <div class="feature-desc">7-day hassle-free returns and exchanges on all ready-to-ship pieces</div>
+    </div>
+    <div>
+      <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.25">
+        <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+      </svg>
+      <div class="feature-title">Authentic Craft</div>
+      <div class="feature-desc">Every piece sourced directly from master artisans across India</div>
+    </div>
+    <div>
+      <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.25">
+        <path d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+      </svg>
+      <div class="feature-title">Style Assistance</div>
+      <div class="feature-desc">Personal styling advice via WhatsApp — because every woman deserves to feel beautiful</div>
+    </div>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section fade-up">
+  <div class="section-eyebrow">What She Said</div>
+  <h2 class="section-title">Loved by <em>Women</em> Across India</h2>
+  <div class="testimonials-grid">
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"I wore my Madhurakshi lehenga to my cousin's wedding and received so many compliments. The fabric quality is simply exceptional — nothing like what you find elsewhere."</p>
+      <div class="testimonial-author">Priya Sharma</div>
+      <div class="testimonial-location">Hyderabad · Bridal Lehenga</div>
+    </div>
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"Finally, an Indian brand that understands women's needs perfectly. The anarkali arrived beautifully packaged and fits like it was made for me. Will definitely order again."</p>
+      <div class="testimonial-author">Meera Krishnan</div>
+      <div class="testimonial-location">Chennai · Anarkali Suit</div>
+    </div>
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"Madhurakshi is my go-to for every festive occasion now. The block printed lehenga is an absolute showstopper. The craftsmanship is incredible for the price."</p>
+      <div class="testimonial-author">Ananya Reddy</div>
+      <div class="testimonial-location">Bangalore · Block Print Lehenga</div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTAGRAM -->
+<section class="instagram-section fade-up">
+  <div class="instagram-inner">
+    <div class="section-header">
+      <div class="section-eyebrow">@madhurakshiofficial</div>
+      <h2 class="section-title">Style <em>Stories</em></h2>
+      <p class="section-sub">Tag us in your photos for a chance to be featured</p>
+    </div>
+    <div class="instagram-grid">
+      <div class="ig-item">
+        <img src="frontendimages/lehengas/l1-1.png" loading="lazy" alt=""/>
+        <div class="ig-overlay">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </div>
+      </div>
+      <div class="ig-item">
+        <img src="frontendimages/anarkali/a1-1.png" loading="lazy" alt=""/>
+        <div class="ig-overlay">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </div>
+      </div>
+      <div class="ig-item">
+        <img src="frontendimages/kurti/k1-1.png" loading="lazy" alt=""/>
+        <div class="ig-overlay">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </div>
+      </div>
+      <div class="ig-item">
+        <img src="frontendimages/lehengas/l2-1.png" loading="lazy" alt=""/>
+        <div class="ig-overlay">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </div>
+      </div>
+      <div class="ig-item">
+        <img src="frontendimages/anarkali/a1-1.png" loading="lazy" alt=""/>
+        <div class="ig-overlay">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:32px">
+      <a href="https://instagram.com/madhurakshiofficial" target="_blank" class="btn-secondary">Follow on Instagram</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="indexca.html" class="logo">MADHURAKSHI<small>Est. 2024</small></a>
+      <p class="footer-tagline">
+        "For the woman who carries grace in silence, and lets her elegance speak to the world."
+      </p>
+      <div class="footer-social">
+        <a href="https://instagram.com/madhurakshiofficial" target="_blank" class="social-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.5">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+          </svg>
+        </a>
+        <a href="#" class="social-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.5">
+            <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.4 5.2 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <ul class="footer-links">
+        <li><a href="lehengas.html">Lehengas</a></li>
+        <li><a href="anarkali.html">Anarkali</a></li>
+        <li><a href="kurthi.html">Kurtis</a></li>
+        <li><a href="#">New Arrivals</a></li>
+        <li><a href="#">Festive Edit</a></li>
+        <li><a href="#">Sale</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Help</h4>
+      <ul class="footer-links">
+        <li><a href="contactus.html">Contact Us</a></li>
+        <li><a href="faq.html">FAQs</a></li>
+        <li><a href="shipping.html">Shipping & Delivery</a></li>
+        <li><a href="returns.html">Returns & Exchange</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+        <li><a href="orders.html">Track My Order</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Stay in Touch</h4>
+      <p class="newsletter-text">
+        Be the first to know about new arrivals, exclusive offers and styling stories.
+      </p>
+      <div class="newsletter-form">
+        <input type="email" placeholder="Your email address"/>
+        <button>Subscribe</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom" style="max-width:1400px;margin:0 auto">
+    <span>© 2026 Madhurakshi. All rights reserved.</span>
+    <div class="footer-bottom-links">
+      <a href="privacy.html">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Sitemap</a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script>
+// ── MOBILE MENU ──
+function openMobileMenu() {
+  document.getElementById('mobileMenu').classList.add('open');
+  document.getElementById('mobileOverlay').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+function closeMobileMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.getElementById('mobileOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+// ── SEARCH ──
+let allProducts = [];
+let searchTimeout;
+
+window.addEventListener('load', async () => {
+  if (typeof supabase !== 'undefined' && typeof db !== 'undefined') {
+    const cached = sessionStorage.getItem('products');
+    if (cached) {
+      allProducts = JSON.parse(cached);
+    } else {
+      const { data } = await db.from('products').select('*');
+      allProducts = data || [];
+      sessionStorage.setItem('products', JSON.stringify(allProducts));
+    }
+
+    const user = await Auth.getUser();
+    if (user) {
+      const name = user.user_metadata?.full_name?.split(' ')[0] || 'Account';
+      const label = document.getElementById('nav-account-label');
+      if (label) label.textContent = name;
+    }
+  }
+  Cart.updateBadge();
+});
+
+function handleSearch() {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    const q = document.getElementById('searchInput').value.trim().toLowerCase();
+    const main = document.getElementById('mainContent');
+    const results = document.getElementById('searchResultsSection');
+
+    if (!q) {
+      main.style.display = '';
+      results.style.display = 'none';
+      return;
+    }
+
+    main.style.display = 'none';
+    results.style.display = 'block';
+    document.getElementById('searchTerm').textContent = q;
+
+    const filtered = allProducts.filter(p =>
+      [p.name, p.description, p.category, p.color].some(f => f?.toLowerCase().includes(q))
+    );
+
+    const grid = document.getElementById('searchGrid');
+    if (!filtered.length) {
+      grid.innerHTML = '<p style="color:var(--muted);grid-column:1/-1">No products found.</p>';
+      return;
+    }
+
+    grid.innerHTML = filtered.map(p => `
+      <a href="${p.link || '#'}" class="product-card">
+        <div class="product-img-wrap">
+          <img src="${p.image || ''}" alt="${p.name}" loading="lazy"/>
+        </div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-price"><span class="price-now">₹${Number(p.price).toLocaleString()}</span></div>
+      </a>
+    `).join('');
+  }, 300);
+}
+
+function wishlistClick(id) {
+  showToast('Sign in to save to wishlist');
+}
+
+// ── SCROLL ANIMATIONS ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

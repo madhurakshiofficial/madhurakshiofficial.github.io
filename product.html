@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product | Madhurakshi</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+<style>
+body {
+  background:#fdf6ee;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* IMAGE SLIDER BOX */
+.slider {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  aspect-ratio: 4/5;
+  background: #eee;
+}
+
+/* TRACK */
+.track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.4s ease;
+}
+
+/* SLIDES */
+.slide {
+  min-width: 100%;
+  height: 100%;
+  flex-shrink: 0;
+}
+
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+/* DOTS */
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #cbb3a3;
+  transition: 0.3s;
+}
+
+.dot.active {
+  width: 18px;
+  background: #8b0000;
+}
+
+/* ARROWS */
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.8);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  color: #8b0000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow:hover {
+  background: white;
+}
+
+.left { left: 10px; }
+.right { right: 10px; }
+
+.cta-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: linear-gradient(135deg, var(--crimson) 0%, #6b0000 100%);
+    color: white;
+    text-decoration: none;
+    padding: 15px 32px;
+    border-radius: 50px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(139,0,0,0.3);
+  }
+  .cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(139,0,0,0.4);
+  }
+  .cta-btn:active { transform: translateY(0); }
+
+  .ig-icon {
+    width: 20px;
+    height: 20px;
+    fill: white;
+  }
+
+  .cta-note {
+    font-size: 0.72rem;
+    color: var(--text-light);
+    text-align: center;
+    margin-top: 10px;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="flex justify-between items-center px-6 py-4 bg-white shadow">
+  <h1 class="text-[#8b0000] font-bold tracking-widest">MADHURAKSHI</h1>
+  <a href="index.html" class="text-sm text-[#8b0000]">← Back</a>
+</div>
+
+<!-- PRODUCT -->
+<div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 p-6">
+
+  <!-- LEFT -->
+  <div>
+    <div class="slider" id="slider">
+
+      <div class="track" id="track"></div>
+
+      <!-- arrows -->
+      <button class="arrow left" onclick="prev()">‹</button>
+      <button class="arrow right" onclick="next()">›</button>
+
+    </div>
+
+    <!-- dots -->
+    <div id="dots" class="flex gap-2 justify-center mt-3"></div>
+  </div>
+
+  <!-- RIGHT -->
+  <div>
+    <h1 id="name" class="text-3xl font-bold text-[#8b0000]"></h1>
+    <p id="price" class="text-xl font-semibold mt-2 text-pink-700"></p>
+    <p id="desc" class="mt-4 text-gray-600"></p>
+    <br><br>
+
+    <!-- IG BUTTON -->
+    <a href="https://www.instagram.com/madhurakshiofficial/" target="_blank" class="cta-btn">
+      <!-- Instagram SVG icon -->
+      <svg class="ig-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+      </svg>
+      DM to Order on Instagram
+    </a>
+    <p class="cta-note">Usually replies within a few hours</p>
+  </div>
+</div>
+
+<script>
+const supabaseUrl = 'https://cvhepeydpmxmwjmenrqz.supabase.co';
+const supabaseKey = 'sb_publishable_abcuiG8cYZ2-mVgrSBNEfw_5uZszN-U';
+const client = supabase.createClient(supabaseUrl, supabaseKey);
+
+const id = new URLSearchParams(window.location.search).get("id");
+
+let images = [];
+let index = 0;
+
+const track = document.getElementById("track");
+const dots = document.getElementById("dots");
+
+/* ---------------- SLIDER ---------------- */
+
+function render() {
+  track.innerHTML = "";
+  dots.innerHTML = "";
+
+  images.forEach((img, i) => {
+
+    // slide
+    const div = document.createElement("div");
+    div.className = "slide";
+    div.innerHTML = `<img src="${img}" />`;
+    track.appendChild(div);
+
+    // dot
+    const d = document.createElement("div");
+    d.className = "dot" + (i === index ? " active" : "");
+    d.onclick = () => goTo(i);
+    dots.appendChild(d);
+  });
+
+  update();
+}
+
+function update() {
+  track.style.transform = `translateX(-${index * 100}%)`;
+
+  document.querySelectorAll(".dot").forEach((d, i) => {
+    d.classList.toggle("active", i === index);
+  });
+}
+
+function next() {
+  index = (index + 1) % images.length;
+  update();
+}
+
+function prev() {
+  index = (index - 1 + images.length) % images.length;
+  update();
+}
+
+function goTo(i) {
+  index = i;
+  update();
+}
+
+/* SWIPE */
+let startX = 0;
+
+document.getElementById("slider").addEventListener("touchstart", e => {
+  startX = e.touches[0].clientX;
+});
+
+document.getElementById("slider").addEventListener("touchend", e => {
+  let endX = e.changedTouches[0].clientX;
+
+  if (startX - endX > 50) next();
+  if (endX - startX > 50) prev();
+});
+
+/* ---------------- FETCH PRODUCT ---------------- */
+
+async function loadProduct() {
+  if (!id) return;
+
+  const { data } = await client
+    .from("products")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (!data) return;
+
+  document.getElementById("name").innerText = data.name;
+  document.getElementById("price").innerText = "₹" + data.price;
+  document.getElementById("desc").innerText = data.description || "";
+
+  images = data.images?.length ? data.images : [data.image];
+
+  index = 0;
+  render();
+}
+
+loadProduct();
+</script>
+
+</body>
+</html>

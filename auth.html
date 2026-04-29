@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account – Madhurakshi</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  body { font-family:'Poppins',sans-serif; background:#fdf6ee; }
+  .logo-text { font-family:'Cinzel',serif; letter-spacing:3px; color:#8b0000; }
+  input:focus { outline:2px solid #8b0000; border-color:transparent; }
+</style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center px-4">
+
+  <a href="index.html" class="logo-text text-2xl mb-8 block text-center">MADHURAKSHI</a>
+
+  <div class="bg-white rounded-xl shadow-md p-8 w-full max-w-md">
+
+    <!-- TABS -->
+    <div class="flex border-b mb-6">
+      <button id="tab-login"  onclick="switchTab('login')"
+        class="flex-1 pb-3 text-sm font-medium text-[#8b0000] border-b-2 border-[#8b0000]">
+        Sign In
+      </button>
+      <button id="tab-signup" onclick="switchTab('signup')"
+        class="flex-1 pb-3 text-sm font-medium text-gray-400">
+        Create Account
+      </button>
+    </div>
+
+    <!-- ERROR MSG -->
+    <div id="error-msg" class="hidden bg-red-50 text-red-700 text-sm rounded p-3 mb-4"></div>
+    <div id="success-msg" class="hidden bg-green-50 text-green-700 text-sm rounded p-3 mb-4"></div>
+
+    <!-- LOGIN FORM -->
+    <div id="form-login">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs text-gray-500 mb-1">Email</label>
+          <input id="login-email" type="email" placeholder="you@email.com"
+            class="w-full border rounded-lg px-4 py-2.5 text-sm"/>
+        </div>
+        <div>
+          <label class="block text-xs text-gray-500 mb-1">Password</label>
+          <input id="login-password" type="password" placeholder="••••••••"
+            class="w-full border rounded-lg px-4 py-2.5 text-sm"/>
+        </div>
+        <button onclick="handleLogin()"
+          class="w-full bg-[#8b0000] text-white py-3 rounded-lg text-sm font-medium hover:bg-red-900 transition">
+          Sign In
+        </button>
+      </div>
+      <p class="text-center text-xs text-gray-400 mt-4 cursor-pointer hover:text-gray-600">
+        Forgot password?
+      </p>
+    </div>
+
+    <!-- SIGNUP FORM -->
+    <div id="form-signup" class="hidden">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs text-gray-500 mb-1">Full Name</label>
+          <input id="signup-name" type="text" placeholder="Your name"
+            class="w-full border rounded-lg px-4 py-2.5 text-sm"/>
+        </div>
+        <div>
+          <label class="block text-xs text-gray-500 mb-1">Email</label>
+          <input id="signup-email" type="email" placeholder="you@email.com"
+            class="w-full border rounded-lg px-4 py-2.5 text-sm"/>
+        </div>
+        <div>
+          <label class="block text-xs text-gray-500 mb-1">Password</label>
+          <input id="signup-password" type="password" placeholder="Min 6 characters"
+            class="w-full border rounded-lg px-4 py-2.5 text-sm"/>
+        </div>
+        <button onclick="handleSignup()"
+          class="w-full bg-[#8b0000] text-white py-3 rounded-lg text-sm font-medium hover:bg-red-900 transition">
+          Create Account
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script>
+function switchTab(tab) {
+  const isLogin = tab === 'login';
+  document.getElementById('form-login').classList.toggle('hidden', !isLogin);
+  document.getElementById('form-signup').classList.toggle('hidden', isLogin);
+  document.getElementById('tab-login').className  = `flex-1 pb-3 text-sm font-medium ${isLogin  ? 'text-[#8b0000] border-b-2 border-[#8b0000]' : 'text-gray-400'}`;
+  document.getElementById('tab-signup').className = `flex-1 pb-3 text-sm font-medium ${!isLogin ? 'text-[#8b0000] border-b-2 border-[#8b0000]' : 'text-gray-400'}`;
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-msg');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+  document.getElementById('success-msg').classList.add('hidden');
+}
+
+function showSuccess(msg) {
+  const el = document.getElementById('success-msg');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+  document.getElementById('error-msg').classList.add('hidden');
+}
+
+async function handleLogin() {
+  const email    = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  if (!email || !password) return showError('Please fill in all fields.');
+
+  const { error } = await Auth.signIn(email, password);
+  if (error) return showError(error.message);
+
+  const redirect = new URLSearchParams(window.location.search).get('redirect') || 'index.html';
+  window.location.href = redirect;
+}
+
+async function handleSignup() {
+  const name     = document.getElementById('signup-name').value.trim();
+  const email    = document.getElementById('signup-email').value.trim();
+  const password = document.getElementById('signup-password').value;
+  if (!name || !email || !password) return showError('Please fill in all fields.');
+  if (password.length < 6) return showError('Password must be at least 6 characters.');
+
+  const { error } = await Auth.signUp(email, password, name);
+  if (error) return showError(error.message);
+  showSuccess('Account created! Please check your email to confirm.');
+}
+
+// Redirect if already logged in
+Auth.getUser().then(user => {
+  if (user) window.location.href = 'account.html';
+});
+</script>
+</body>
+</html>
