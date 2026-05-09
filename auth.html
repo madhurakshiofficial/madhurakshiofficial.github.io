@@ -1,141 +1,306 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Account – Madhurakshi</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-  body { font-family:'Poppins',sans-serif; background:#fdf6ee; }
-  .logo-text { font-family:'Cinzel',serif; letter-spacing:3px; color:#8b0000; }
-  input:focus { outline:2px solid #8b0000; border-color:transparent; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — Madhurakshi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --crimson: #8b0000; --crimson-light: #a31515;
+      --gold: #c9a84c; --gold-light: #e8c97e;
+      --cream: #fdf6ee; --text-brown: #5c3d2e; --text-light: #8a6a5a; --white: #ffffff;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html, body { height:100%; font-family:'Poppins',sans-serif; background:var(--cream); color:var(--text-brown); overflow:hidden; }
+
+    .page { display:grid; grid-template-columns:1fr 1fr; height:100vh; }
+
+    /* ── LEFT PANEL ── */
+    .left {
+      position:relative; background:#2b0a0a; overflow:hidden;
+      display:flex; flex-direction:column; justify-content:flex-end; padding:3.5rem;
+    }
+    .left-bg {
+      position:absolute; inset:0;
+      background:radial-gradient(ellipse 60% 70% at 25% 25%, rgba(201,168,76,0.15) 0%, transparent 65%),
+                  radial-gradient(ellipse 40% 50% at 75% 75%, rgba(139,0,0,0.35) 0%, transparent 65%);
+    }
+    .left-ornament {
+      position:absolute; top:8%; right:-60px; width:300px; height:300px; border-radius:50%;
+      border:1px solid rgba(201,168,76,0.18); animation:rotateOrn 50s linear infinite;
+    }
+    .left-ornament::before { content:''; position:absolute; inset:32px; border-radius:50%; border:1px solid rgba(201,168,76,0.1); }
+    .left-ornament::after { content:''; position:absolute; inset:70px; border-radius:50%; border:1px dashed rgba(201,168,76,0.07); }
+    @keyframes rotateOrn { to{transform:rotate(360deg)} }
+
+    .left-brand { position:absolute; top:3rem; left:3.5rem; display:flex; align-items:center; gap:10px; text-decoration:none; }
+    .left-brand-dot { width:8px; height:8px; border-radius:50%; background:var(--gold); }
+    .left-brand-name { font-family:'Cinzel',serif; font-size:0.9rem; letter-spacing:3px; color:rgba(255,255,255,0.5); }
+
+    .left-content { position:relative; z-index:2; }
+    .left-tag { font-size:0.65rem; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:18px; font-weight:500; }
+    .left-headline { font-family:'Playfair Display',serif; font-size:clamp(2.2rem,3.5vw,3.2rem); font-weight:400; line-height:1.2; color:#fffefb; margin-bottom:20px; }
+    .left-headline em { font-style:italic; color:var(--gold-light); }
+    .left-divider { width:40px; height:1.5px; background:linear-gradient(90deg,var(--gold),transparent); margin-bottom:16px; border-radius:1px; }
+    .left-sub { font-size:0.8rem; line-height:1.8; color:rgba(255,255,255,0.4); font-weight:300; max-width:280px; }
+
+    /* ── RIGHT PANEL ── */
+    .right {
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      padding:2rem 4rem; background:var(--white); position:relative; overflow-y:auto;
+    }
+    .right::before {
+      content:''; position:absolute; left:0; top:15%; bottom:15%; width:1px;
+      background:linear-gradient(to bottom,transparent,rgba(139,0,0,0.1) 30%,rgba(139,0,0,0.1) 70%,transparent);
+    }
+
+    .signin-card { width:100%; max-width:380px; animation:fadeUp 0.5s ease both; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+    /* MODE TOGGLE */
+    .mode-toggle { display:flex; background:var(--cream); border-radius:50px; padding:4px; margin-bottom:28px; border:1px solid rgba(139,0,0,0.12); }
+    .mode-btn { flex:1; padding:9px; font-size:0.8rem; font-family:'Poppins',sans-serif; font-weight:400; border:none; background:transparent; cursor:pointer; border-radius:50px; color:var(--text-light); transition:all 0.2s; letter-spacing:0.3px; }
+    .mode-btn.active { background:var(--white); color:var(--crimson); box-shadow:0 2px 8px rgba(139,0,0,0.12); font-weight:500; }
+
+    .card-badge { font-size:0.65rem; letter-spacing:2.5px; text-transform:uppercase; color:var(--gold); font-weight:500; margin-bottom:8px; display:block; }
+    .card-title { font-family:'Playfair Display',serif; font-size:2rem; font-weight:400; color:var(--crimson); line-height:1.1; margin-bottom:6px; }
+    .card-title em { font-style:italic; }
+    .card-sub { font-size:0.78rem; color:var(--text-light); margin-bottom:24px; line-height:1.6; }
+
+    /* SOCIAL */
+    .social-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px; }
+    .btn-social { display:flex; align-items:center; justify-content:center; gap:8px; padding:11px 14px; background:var(--white); border:1.5px solid rgba(139,0,0,0.15); border-radius:50px; font-family:'Poppins',sans-serif; font-size:0.78rem; font-weight:400; color:var(--text-brown); cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+    .btn-social:hover { background:var(--cream); border-color:var(--gold); }
+    .btn-social:disabled { opacity:0.55; cursor:not-allowed; }
+
+    /* DIVIDER */
+    .divider { display:flex; align-items:center; gap:10px; margin:18px 0; }
+    .divider-line { flex:1; height:1px; background:rgba(139,0,0,0.1); }
+    .divider-text { font-size:0.65rem; letter-spacing:2px; color:var(--text-light); text-transform:uppercase; }
+
+    /* FORM */
+    .field { margin-bottom:14px; }
+    .field label { display:block; font-size:0.65rem; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-bottom:6px; font-weight:500; }
+    .field input { width:100%; padding:11px 14px; background:var(--cream); border:1.5px solid rgba(139,0,0,0.15); border-radius:10px; font-family:'Poppins',sans-serif; font-size:0.85rem; color:var(--text-brown); outline:none; transition:border-color 0.2s,background 0.2s; }
+    .field input:focus { border-color:var(--crimson); background:var(--white); }
+    .field input::placeholder { color:#c0a898; }
+
+    .field-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+    .forgot { font-size:0.72rem; color:var(--crimson); text-decoration:none; }
+    .forgot:hover { text-decoration:underline; }
+
+    .pw-wrap { position:relative; }
+    .pw-wrap input { padding-right:42px; }
+    .pw-toggle { position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text-light); padding:4px; display:flex; align-items:center; }
+    .pw-toggle:hover { color:var(--crimson); }
+
+    .name-row { display:none; grid-template-columns:1fr 1fr; gap:10px; }
+    .name-row.visible { display:grid; }
+    .confirm-field { display:none; }
+    .confirm-field.visible { display:block; }
+
+    /* ALERT */
+    .alert { display:none; padding:10px 14px; border-radius:10px; font-size:0.78rem; line-height:1.5; margin-bottom:14px; }
+    .alert.error { display:block; background:#fff5f5; color:#c62828; border-left:3px solid #c62828; }
+    .alert.success { display:block; background:#e8f5e9; color:#2e7d32; border-left:3px solid #2e7d32; }
+
+    /* SUBMIT */
+    .btn-primary { width:100%; padding:14px; background:linear-gradient(135deg,var(--crimson),#6b0000); color:#fff; border:none; border-radius:50px; font-family:'Poppins',sans-serif; font-size:0.88rem; font-weight:500; letter-spacing:0.5px; cursor:pointer; box-shadow:0 4px 20px rgba(139,0,0,0.3); transition:transform 0.2s,box-shadow 0.2s; display:flex; align-items:center; justify-content:center; gap:10px; margin-top:18px; }
+    .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(139,0,0,0.4); }
+    .btn-primary:active { transform:translateY(0); }
+    .btn-primary:disabled { background:#ccc; cursor:not-allowed; transform:none; box-shadow:none; }
+
+    .spinner { width:15px; height:15px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; display:none; }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+    .card-footer { margin-top:20px; padding-top:16px; border-top:1px solid rgba(139,0,0,0.08); font-size:0.68rem; color:var(--text-light); text-align:center; line-height:1.7; }
+    .card-footer a { color:var(--gold); text-decoration:none; }
+
+    /* TOAST */
+    #toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px); background:#1a1a1a; color:#fff; padding:12px 24px; border-radius:30px; font-size:0.85rem; z-index:999; opacity:0; transition:all 0.3s; pointer-events:none; font-family:'Poppins',sans-serif; }
+    #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    @media(max-width:768px) {
+      .page { grid-template-columns:1fr; overflow-y:auto; }
+      .left { display:none; }
+      .right { padding:2rem 1.5rem; overflow-y:auto; height:100vh; }
+      .right::before { display:none; }
+      html, body { overflow:auto; }
+    }
+    ::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-thumb{background:#d4a373;border-radius:4px;}
+  </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center px-4">
+<body>
 
-  <a href="index.html" class="logo-text text-2xl mb-8 block text-center">MADHURAKSHI</a>
-
-  <div class="bg-white rounded-xl shadow-md p-8 w-full max-w-md">
-
-    <!-- TABS -->
-    <div class="flex border-b mb-6">
-      <button id="tab-login"  onclick="switchTab('login')"
-        class="flex-1 pb-3 text-sm font-medium text-[#8b0000] border-b-2 border-[#8b0000]">
-        Sign In
-      </button>
-      <button id="tab-signup" onclick="switchTab('signup')"
-        class="flex-1 pb-3 text-sm font-medium text-gray-400">
-        Create Account
-      </button>
+<div class="page">
+  <!-- LEFT -->
+  <div class="left">
+    <div class="left-bg"></div>
+    <div class="left-ornament"></div>
+    <a href="index.html" class="left-brand">
+      <div class="left-brand-dot"></div>
+      <span class="left-brand-name">MADHURAKSHI</span>
+    </a>
+    <div class="left-content">
+      <p class="left-tag">✦ Your account</p>
+      <h1 class="left-headline">Crafted with<br><em>intention,</em><br>worn with grace.</h1>
+      <div class="left-divider"></div>
+      <p class="left-sub">Sign in to explore curated collections, track your orders, and enjoy a seamless experience.</p>
     </div>
-
-    <!-- ERROR MSG -->
-    <div id="error-msg" class="hidden bg-red-50 text-red-700 text-sm rounded p-3 mb-4"></div>
-    <div id="success-msg" class="hidden bg-green-50 text-green-700 text-sm rounded p-3 mb-4"></div>
-
-    <!-- LOGIN FORM -->
-    <div id="form-login">
-      <div class="space-y-4">
-        <div>
-          <label class="block text-xs text-gray-500 mb-1">Email</label>
-          <input id="login-email" type="email" placeholder="you@email.com"
-            class="w-full border rounded-lg px-4 py-2.5 text-sm"/>
-        </div>
-        <div>
-          <label class="block text-xs text-gray-500 mb-1">Password</label>
-          <input id="login-password" type="password" placeholder="••••••••"
-            class="w-full border rounded-lg px-4 py-2.5 text-sm"/>
-        </div>
-        <button onclick="handleLogin()"
-          class="w-full bg-[#8b0000] text-white py-3 rounded-lg text-sm font-medium hover:bg-red-900 transition">
-          Sign In
-        </button>
-      </div>
-      <p class="text-center text-xs text-gray-400 mt-4 cursor-pointer hover:text-gray-600">
-        Forgot password?
-      </p>
-    </div>
-
-    <!-- SIGNUP FORM -->
-    <div id="form-signup" class="hidden">
-      <div class="space-y-4">
-        <div>
-          <label class="block text-xs text-gray-500 mb-1">Full Name</label>
-          <input id="signup-name" type="text" placeholder="Your name"
-            class="w-full border rounded-lg px-4 py-2.5 text-sm"/>
-        </div>
-        <div>
-          <label class="block text-xs text-gray-500 mb-1">Email</label>
-          <input id="signup-email" type="email" placeholder="you@email.com"
-            class="w-full border rounded-lg px-4 py-2.5 text-sm"/>
-        </div>
-        <div>
-          <label class="block text-xs text-gray-500 mb-1">Password</label>
-          <input id="signup-password" type="password" placeholder="Min 6 characters"
-            class="w-full border rounded-lg px-4 py-2.5 text-sm"/>
-        </div>
-        <button onclick="handleSignup()"
-          class="w-full bg-[#8b0000] text-white py-3 rounded-lg text-sm font-medium hover:bg-red-900 transition">
-          Create Account
-        </button>
-      </div>
-    </div>
-
   </div>
 
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script src="supabase.js"></script>
+  <!-- RIGHT -->
+  <div class="right">
+    <div class="signin-card">
+
+      <div class="mode-toggle">
+        <button class="mode-btn active" id="signinTab" onclick="setMode('signin')">Sign In</button>
+        <button class="mode-btn" id="signupTab" onclick="setMode('signup')">Create Account</button>
+      </div>
+
+      <span class="card-badge" id="cardBadge">✦ Welcome back</span>
+      <h2 class="card-title" id="cardTitle">Sign <em>In</em></h2>
+      <p class="card-sub" id="cardSub">Access your Madhurakshi account.</p>
+
+      <div class="alert" id="alert"></div>
+
+      <div class="social-row">
+        <button class="btn-social" id="googleBtn" onclick="signInWithGoogle()">
+          <svg width="15" height="15" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908C16.658 14.017 17.64 11.71 17.64 9.2z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853"/><path d="M3.964 10.707A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+          Google
+        </button>
+        <button class="btn-social" id="appleBtn" onclick="signInWithApple()">
+          <svg width="13" height="15" viewBox="0 0 814 1000" fill="currentColor"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76.5 0-103.7 40.8-165.9 40.8s-105.6-57.8-155.5-127.4C46 790.7 0 663.1 0 541.8c0-207.8 134.4-318 266.5-318 99.8 0 182.6 65.8 245.7 65.8 60.3 0 155-70 269.5-70 43.6 0 156.3 4 236 75.2zM533.9 1.9C559.4-9.1 621.4-33 684-33c49.5 0 132.6 37.2 165.9 116.8 33.3 79.6 44.2 188.1-3.2 244.4C783.7 384.6 728.7 400 664.7 400c-49.5 0-102.6-34.5-143.8-99.1-41.2-64.6-44.2-151.6-8.1-215.6L533.9 1.9z"/></svg>
+          Apple
+        </button>
+      </div>
+
+      <div class="divider">
+        <div class="divider-line"></div>
+        <span class="divider-text">or with email</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="name-row" id="nameRow">
+        <div class="field"><label>First Name</label><input type="text" id="firstName" placeholder="Priya" autocomplete="given-name"></div>
+        <div class="field"><label>Last Name</label><input type="text" id="lastName" placeholder="Sharma" autocomplete="family-name"></div>
+      </div>
+
+      <div class="field">
+        <label>Email Address</label>
+        <input type="email" id="email" placeholder="you@example.com" autocomplete="email" onkeydown="handleEnter(event)">
+      </div>
+
+      <div class="field">
+        <div class="field-row">
+          <label style="margin-bottom:0">Password</label>
+          <a href="#" class="forgot" id="forgotLink" onclick="forgotPassword(event)">Forgot password?</a>
+        </div>
+        <div class="pw-wrap" style="margin-top:6px">
+          <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" onkeydown="handleEnter(event)">
+          <button class="pw-toggle" onclick="togglePassword()" type="button">
+            <svg id="eyeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="field confirm-field" id="confirmField">
+        <label>Confirm Password</label>
+        <input type="password" id="confirmPassword" placeholder="••••••••" autocomplete="new-password" onkeydown="handleEnter(event)">
+      </div>
+
+      <button class="btn-primary" id="submitBtn" onclick="handleSubmit()">
+        <span id="submitText">Sign In</span>
+        <div class="spinner" id="spinner"></div>
+      </button>
+
+      <div class="card-footer">
+        By continuing you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
 <script>
-function switchTab(tab) {
-  const isLogin = tab === 'login';
-  document.getElementById('form-login').classList.toggle('hidden', !isLogin);
-  document.getElementById('form-signup').classList.toggle('hidden', isLogin);
-  document.getElementById('tab-login').className  = `flex-1 pb-3 text-sm font-medium ${isLogin  ? 'text-[#8b0000] border-b-2 border-[#8b0000]' : 'text-gray-400'}`;
-  document.getElementById('tab-signup').className = `flex-1 pb-3 text-sm font-medium ${!isLogin ? 'text-[#8b0000] border-b-2 border-[#8b0000]' : 'text-gray-400'}`;
+const SUPABASE_URL='https://cvhepeydpmxmwjmenrqz.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2aGVwZXlkcG14bXdqbWVucnF6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2MTk2OTksImV4cCI6MjA5MTE5NTY5OX0.hLDAcPvwfk3w7K8_YRZwAu55kK_hEAbevPQd-fkDNl8';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let mode='signin';
+
+function setMode(m){
+  mode=m; const isSignup=m==='signup';
+  document.getElementById('signinTab').classList.toggle('active',!isSignup);
+  document.getElementById('signupTab').classList.toggle('active',isSignup);
+  document.getElementById('cardBadge').textContent=isSignup?'✦ Join Madhurakshi':'✦ Welcome back';
+  document.getElementById('cardTitle').innerHTML=isSignup?'Create <em>Account</em>':'Sign <em>In</em>';
+  document.getElementById('cardSub').textContent=isSignup?'Join Madhurakshi and discover our collection.':'Access your Madhurakshi account.';
+  document.getElementById('submitText').textContent=isSignup?'Create Account':'Sign In';
+  document.getElementById('forgotLink').style.display=isSignup?'none':'';
+  document.getElementById('nameRow').classList.toggle('visible',isSignup);
+  document.getElementById('confirmField').classList.toggle('visible',isSignup);
+  document.getElementById('password').autocomplete=isSignup?'new-password':'current-password';
+  clearAlert();
 }
-
-function showError(msg) {
-  const el = document.getElementById('error-msg');
-  el.textContent = msg;
-  el.classList.remove('hidden');
-  document.getElementById('success-msg').classList.add('hidden');
+function showAlert(msg,type='error'){const el=document.getElementById('alert');el.textContent=msg;el.className='alert '+type;}
+function clearAlert(){document.getElementById('alert').className='alert';}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);}
+function setLoading(on){document.getElementById('submitBtn').disabled=on;document.getElementById('spinner').style.display=on?'block':'none';}
+function togglePassword(){
+  const input=document.getElementById('password');const icon=document.getElementById('eyeIcon');
+  if(input.type==='password'){input.type='text';icon.innerHTML='<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';}
+  else{input.type='password';icon.innerHTML='<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';}
 }
-
-function showSuccess(msg) {
-  const el = document.getElementById('success-msg');
-  el.textContent = msg;
-  el.classList.remove('hidden');
-  document.getElementById('error-msg').classList.add('hidden');
+function handleEnter(e){if(e.key==='Enter')handleSubmit();}
+async function handleSubmit(){
+  clearAlert();
+  const email=document.getElementById('email').value.trim();
+  const password=document.getElementById('password').value;
+  if(!email||!password){showAlert('Please fill in all fields.');return;}
+  if(mode==='signup'){
+    const firstName=document.getElementById('firstName').value.trim();
+    const confirm=document.getElementById('confirmPassword').value;
+    if(!firstName){showAlert('Please enter your first name.');return;}
+    if(password.length<6){showAlert('Password must be at least 6 characters.');return;}
+    if(password!==confirm){showAlert('Passwords do not match.');return;}
+    setLoading(true);
+    const{error}=await sb.auth.signUp({email,password,options:{data:{full_name:(firstName+' '+(document.getElementById('lastName').value.trim())).trim()}}});
+    setLoading(false);
+    if(error){showAlert(error.message);return;}
+    showAlert('Account created! Check your email to confirm.','success');
+  } else {
+    setLoading(true);
+    const{data,error}=await sb.auth.signInWithPassword({email,password});
+    setLoading(false);
+    if(error){showAlert(error.message.includes('Invalid login')?'Incorrect email or password.':error.message);return;}
+    const name=data.user?.user_metadata?.full_name?.split(' ')[0]||'there';
+    showToast('Welcome back, '+name+'!');
+    setTimeout(()=>{window.location.href=sessionStorage.getItem('redirectAfterLogin')||'/';},1200);
+  }
 }
-
-async function handleLogin() {
-  const email    = document.getElementById('login-email').value.trim();
-  const password = document.getElementById('login-password').value;
-  if (!email || !password) return showError('Please fill in all fields.');
-
-  const { error } = await Auth.signIn(email, password);
-  if (error) return showError(error.message);
-
-  const redirect = new URLSearchParams(window.location.search).get('redirect') || 'index.html';
-  window.location.href = redirect;
+async function signInWithGoogle(){
+  document.getElementById('googleBtn').disabled=true;
+  const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin}});
+  if(error){showAlert(error.message);document.getElementById('googleBtn').disabled=false;}
 }
-
-async function handleSignup() {
-  const name     = document.getElementById('signup-name').value.trim();
-  const email    = document.getElementById('signup-email').value.trim();
-  const password = document.getElementById('signup-password').value;
-  if (!name || !email || !password) return showError('Please fill in all fields.');
-  if (password.length < 6) return showError('Password must be at least 6 characters.');
-
-  const { error } = await Auth.signUp(email, password, name);
-  if (error) return showError(error.message);
-  showSuccess('Account created! Please check your email to confirm.');
+async function signInWithApple(){
+  document.getElementById('appleBtn').disabled=true;
+  const{error}=await sb.auth.signInWithOAuth({provider:'apple',options:{redirectTo:window.location.origin}});
+  if(error){showAlert(error.message);document.getElementById('appleBtn').disabled=false;}
 }
-
-// Redirect if already logged in
-Auth.getUser().then(user => {
-  if (user) window.location.href = 'account.html';
+async function forgotPassword(e){
+  e.preventDefault();
+  const email=document.getElementById('email').value.trim();
+  if(!email){showAlert('Enter your email address above first.');return;}
+  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/reset-password'});
+  if(error)showAlert(error.message);
+  else showAlert('Reset link sent! Check your inbox.','success');
+}
+sb.auth.getSession().then(({data:{session}})=>{
+  if(session){showToast('Already signed in. Redirecting…');setTimeout(()=>{window.location.href='/';},1500);}
 });
 </script>
 </body>

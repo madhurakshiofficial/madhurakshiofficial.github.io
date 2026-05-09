@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Madhurakshi</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Poppins', sans-serif; background: #fdf6ee; }
+  .logo-text { font-family: 'Cinzel', serif; letter-spacing: 3px; color: #8b0000; }
+  .heading   { font-family: 'Playfair Display', serif; }
+
+  .fixed-img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: top;
+    border-radius: 0.5rem;
+    background: #f3ece4;
+  }
+
+  /* Skeleton shimmer */
+  @keyframes shimmer {
+    0%   { background-position: -800px 0; }
+    100% { background-position:  800px 0; }
+  }
+  .skeleton {
+    background: linear-gradient(90deg, #f0e6da 25%, #fdf6ee 50%, #f0e6da 75%);
+    background-size: 800px 100%;
+    animation: shimmer 1.4s infinite;
+    border-radius: 0.5rem;
+  }
+
+  /* Product card */
+  .product-card { transition: transform 0.2s, box-shadow 0.2s; }
+  .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(139,0,0,0.13); }
+
+  .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+  /* Active filter button */
+  .cat-btn-active { background: #8b0000; color: #fff; border-color: #8b0000; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════ NAVBAR ══════════════════════════ -->
+<div class="sticky top-0 bg-white shadow-md z-50">
+
+  <div class="max-w-7xl mx-auto flex items-center justify-between px-4 py-4 gap-4">
+
+    <h1 class="logo-text text-lg md:text-3xl whitespace-nowrap">MADHURAKSHI</h1>
+
+    <!-- SEARCH -->
+    <div class="flex-1 max-w-md relative">
+      <div class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+          stroke="#8b5e3c" stroke-width="1.25" class="w-5 h-5">
+          <circle cx="11" cy="11" r="7"/>
+          <line x1="20" y1="20" x2="16.5" y2="16.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search lehengas, kurtis, colours…"
+        class="border border-[#d4b896] p-2 pl-10 pr-8 w-full rounded-md focus:outline-none focus:border-[#8b0000] transition"
+      />
+      <button id="clearBtn"
+        onclick="clearSearch()"
+        style="display:none"
+        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#8b0000] text-base leading-none">✕</button>
+    </div>
+
+    <!-- ICONS -->
+    <div class="flex items-center gap-6 md:gap-10 text-center text-xs">
+      <div class="flex flex-col items-center cursor-pointer group">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+          stroke="#8b5e3c" stroke-width="1.5" class="w-5 h-5 group-hover:scale-110 transition">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 0115 0"/>
+        </svg>
+        <span class="hidden md:block mt-1">Account</span>
+      </div>
+      <div class="flex flex-col items-center cursor-pointer group">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+          stroke="#8b5e3c" stroke-width="1.5" class="w-5 h-5 group-hover:scale-110 transition">
+          <path d="M12 20s-7-4.5-7-10a4 4 0 017-2.5A4 4 0 0119 10c0 5.5-7 10-7 10z"/>
+        </svg>
+        <span class="hidden md:block mt-1">Saved</span>
+      </div>
+      <div class="flex flex-col items-center cursor-pointer group">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+          stroke="#8b5e3c" stroke-width="1.5" class="w-5 h-5 group-hover:scale-110 transition">
+          <path d="M6 8h12l-1.2 10H7.2L6 8z"/>
+          <path d="M9 8V6a3 3 0 016 0v2"/>
+        </svg>
+        <span class="hidden md:block mt-1">Cart</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hidden md:flex justify-center gap-10 pb-3 text-sm text-[#7a1f1f]">
+    <a href="#" class="hover:underline">Home</a>
+    <a href="#collection" class="hover:underline">Collections</a>
+    <a href="#contact" class="hover:underline">Contact</a>
+  </div>
+
+</div>
+
+<!-- MOBILE MENU -->
+<div id="mobileMenu" class="fixed top-0 left-0 w-72 h-full bg-white z-50 transform -translate-x-full transition-transform duration-300 shadow-lg">
+  <div class="flex justify-between items-center p-5">
+    <span class="text-lg font-semibold text-[#7a1f1f]">MENU</span>
+    <button onclick="closeMenu()" class="text-2xl">✕</button>
+  </div>
+  <div class="flex flex-col px-6 gap-6 text-[#7a1f1f] tracking-widest text-sm">
+    <a href="index.html">HOME</a>
+    <a href="#collection">COLLECTION</a>
+    <a href="lehengas.html">LEHENGAS</a>
+    <a href="anarkali.html">ANARKALI</a>
+    <a href="kurthi.html">KURTHI</a>
+    <a href="contactus.html">CONTACT US</a>
+  </div>
+</div>
+<div id="overlay" onclick="closeMenu()" class="fixed inset-0 bg-black/30 hidden z-40"></div>
+
+<!-- ══════════════════════════ SEARCH RESULTS ══════════════════════════ -->
+<div id="searchSection" class="hidden max-w-7xl mx-auto px-4 md:px-6 py-6">
+
+  <!-- Filters + Sort row -->
+  <div class="flex flex-wrap items-center gap-3 mb-4">
+    <span class="text-sm text-[#6b4a34] font-medium shrink-0">Filter:</span>
+    <div id="categoryFilters" class="flex flex-wrap gap-2 flex-1"></div>
+    <select id="sortSelect" onchange="applySort()"
+      class="border border-[#d4b896] rounded px-3 py-1.5 text-sm text-[#6b4a34] focus:outline-none focus:border-[#8b0000]">
+      <option value="default">Sort: Relevance</option>
+      <option value="price_asc">Price: Low → High</option>
+      <option value="price_desc">Price: High → Low</option>
+      <option value="newest">Newest First</option>
+    </select>
+  </div>
+
+  <p id="resultCount" class="text-xs text-gray-500 mb-4"></p>
+
+  <div id="searchGrid" class="grid grid-cols-2 md:grid-cols-4 gap-5"></div>
+
+  <div id="noResults" class="hidden text-center py-20">
+    <p class="text-5xl mb-4">😢</p>
+    <p class="text-gray-500 text-lg">No results for "<span id="noResultsQuery" class="text-[#8b0000]"></span>"</p>
+    <p class="text-sm text-gray-400 mt-1">Try a different name, colour, fabric or category</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════ HOME PAGE ══════════════════════════ -->
+<div id="homePage">
+
+  <!-- HERO -->
+  <div class="max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-12 flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+    <div class="md:w-1/2 text-center md:text-left">
+      <h1 class="heading text-xl md:text-4xl text-[#8b5e3c] leading-relaxed font-semibold">
+        Madhurakshi <br>
+        Where Indian Tradition meets modern elegance for today.
+      </h1>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+        <a href="#collection" class="bg-red-800 text-white px-6 py-3 rounded text-center w-full sm:w-auto hover:bg-red-900 transition">Explore Collection</a>
+        <a href="https://www.instagram.com/madhurakshiofficial/?hl=en" target="_blank"
+           class="bg-red-800 text-white px-6 py-3 rounded text-center w-full sm:w-auto hover:bg-red-900 transition">Instagram</a>
+      </div>
+    </div>
+    <div class="md:w-1/3 mt-4 md:mt-0">
+      <img src="logo.png" class="mx-auto w-40 md:w-full mix-blend-multiply">
+    </div>
+  </div>
+
+  <!-- NEW COLLECTION SLIDER -->
+  <div class="max-w-7xl mx-auto px-4 md:px-6 py-10 bg-[#e8d5c4] rounded-xl overflow-hidden">
+    <h2 class="heading text-xl text-center mb-6 text-red-800">New Collection ✨</h2>
+
+    <!-- Skeleton -->
+    <div id="sliderSkeleton" class="flex justify-center gap-4">
+      <div class="skeleton w-56 h-72 rounded-xl"></div>
+    </div>
+
+    <!-- Real slider -->
+    <div id="sliderWrapper" class="hidden relative w-full overflow-hidden">
+      <div id="slider" class="flex transition-transform duration-700"></div>
+      <button onclick="prevSlide()"
+        class="absolute top-1/2 left-3 -translate-y-1/2 bg-white/90 px-3 py-1.5 rounded-full shadow hover:bg-white transition z-10">❮</button>
+      <button onclick="nextSlide()"
+        class="absolute top-1/2 right-3 -translate-y-1/2 bg-white/90 px-3 py-1.5 rounded-full shadow hover:bg-white transition z-10">❯</button>
+      <div id="dots" class="flex justify-center mt-4 gap-2"></div>
+    </div>
+  </div>
+
+  <!-- SHOP BY COLLECTION -->
+  <div id="collection" class="max-w-7xl mx-auto px-4 md:px-6 py-10 text-center">
+    <h2 class="heading text-xl mb-2 text-red-800">Shop by Collection</h2>
+    <p class="text-[#6b4a34] mb-8">Discover your timeless pieces, designed to elevate your everyday elegance.</p>
+
+    <!-- Skeletons -->
+    <div id="collectionSkeleton" class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="skeleton aspect-[4/5]"></div>
+      <div class="skeleton aspect-[4/5]"></div>
+      <div class="skeleton aspect-[4/5]"></div>
+      <div class="skeleton aspect-[4/5]"></div>
+    </div>
+
+    <!-- Real grid -->
+    <div id="collectionGrid" class="hidden grid grid-cols-2 md:grid-cols-4 gap-6"></div>
+  </div>
+
+</div><!-- /#homePage -->
+
+<!-- ══════════════════════════ FOOTER ══════════════════════════ -->
+<div id="contact" class="bg-gradient-to-b from-[#8b0000] to-[#5a0000] text-white">
+  <div class="max-w-7xl mx-auto px-6 md:px-12 py-20 grid md:grid-cols-3 gap-20">
+
+    <div>
+      <img src="logo.png" class="w-32 mb-6 brightness-0 invert">
+      <p class="text-[15px] leading-7 text-[#f5dada] max-w-sm">
+        Madhurakshi is about a woman who carries grace in silence,
+        and lets her elegance speak to the world.
+      </p>
+    </div>
+
+    <div>
+      <h3 class="font-semibold mb-6 text-[#fde68a]">Shop</h3>
+      <div class="space-y-4 text-sm">
+        <p><a href="anarkali.html" class="hover:text-[#fde68a] transition">Anarkali</a></p>
+        <p><a href="lehengas.html" class="hover:text-[#fde68a] transition">Lehenga</a></p>
+        <p><a href="kurthi.html"   class="hover:text-[#fde68a] transition">Kurthi</a></p>
+        <p><a href="dresses.html"  class="hover:text-[#fde68a] transition">Dresses</a></p>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="font-semibold mb-6 text-[#fde68a]">Help</h3>
+      <div class="space-y-4 text-sm">
+        <p><a href="contactus.html" class="hover:text-[#fde68a] transition">Contact</a></p>
+        <p><a href="faq.html"       class="hover:text-[#fde68a] transition">FAQs</a></p>
+        <p><a href="shipping.html"  class="hover:text-[#fde68a] transition">Shipping &amp; Delivery</a></p>
+        <p><a href="returns.html"   class="hover:text-[#fde68a] transition">Return &amp; Exchange</a></p>
+        <p><a href="privacy.html"   class="hover:text-[#fde68a] transition">Privacy Policy</a></p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="flex justify-center">
+    <a href="https://instagram.com/madhurakshiofficial" target="_blank"
+       class="bg-white text-[#8b0000] px-10 py-2 rounded font-semibold hover:scale-105 transition">
+      Follow on Instagram
+    </a>
+  </div>
+
+  <div class="border-t border-[#c9a27a] max-w-7xl mx-auto mt-10"></div>
+  <div class="text-center py-6 text-sm text-[#f5dada]">© 2026 Madhurakshi</div>
+</div>
+
+<!-- ══════════════════════════ SCRIPTS ══════════════════════════ -->
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+/* ────────────────────────────────────────────
+   SUPABASE
+──────────────────────────────────────────── */
+const db = supabase.createClient(
+  'https://cvhepeydpmxmwjmenrqz.supabase.co',
+  'sb_publishable_abcuiG8cYZ2-mVgrSBNEfw_5uZszN-U'
+);
+
+/* ────────────────────────────────────────────
+   COLLECTION DISPLAY CONFIG
+   Map each category slug → { label, page }
+──────────────────────────────────────────── */
+const COLLECTION_CONFIG = [
+  { slug: 'lehenga',  label: 'Lehengas', page: 'lehengas.html' },
+  { slug: 'anarkali', label: 'Anarkali', page: 'anarkali.html' },
+  { slug: 'kurti',    label: 'Kurti',    page: 'kurthi.html'   },
+  { slug: 'women',    label: 'Dresses',  page: 'dresses.html'  },
+];
+
+/* ────────────────────────────────────────────
+   STATE
+──────────────────────────────────────────── */
+let allProducts    = [];
+let searchResults  = [];
+let activeCategory = 'all';
+let activeSort     = 'default';
+let searchDebounce = null;
+let sliderIdx      = 0;
+let sliderTimer    = null;
+let totalSlides    = 0;
+
+/* ────────────────────────────────────────────
+   UTILITIES
+──────────────────────────────────────────── */
+const getFirstImage = p =>
+  (Array.isArray(p.images) && p.images.length)
+    ? p.images[0]
+    : 'https://via.placeholder.com/300x400?text=No+Image';
+
+const inrFormat = n =>
+  '₹' + Number(n).toLocaleString('en-IN');
+
+/* ────────────────────────────────────────────
+   MOBILE MENU
+──────────────────────────────────────────── */
+function openMenu()  {
+  document.getElementById('mobileMenu').style.transform = 'translateX(0)';
+  document.getElementById('overlay').classList.remove('hidden');
+}
+function closeMenu() {
+  document.getElementById('mobileMenu').style.transform = 'translateX(-100%)';
+  document.getElementById('overlay').classList.add('hidden');
+}
+
+/* ────────────────────────────────────────────
+   PAGE VISIBILITY
+──────────────────────────────────────────── */
+function showHome() {
+  document.getElementById('homePage').classList.remove('hidden');
+  document.getElementById('searchSection').classList.add('hidden');
+  document.getElementById('clearBtn').style.display = 'none';
+  activeCategory = 'all';
+  activeSort     = 'default';
+  if (document.getElementById('sortSelect'))
+    document.getElementById('sortSelect').value = 'default';
+}
+function showSearch() {
+  document.getElementById('homePage').classList.add('hidden');
+  document.getElementById('searchSection').classList.remove('hidden');
+  document.getElementById('clearBtn').style.display = 'block';
+}
+
+/* ────────────────────────────────────────────
+   CLEAR SEARCH
+──────────────────────────────────────────── */
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  showHome();
+}
+
+/* ────────────────────────────────────────────
+   PRODUCT CARD
+──────────────────────────────────────────── */
+function createProductCard(p) {
+  const img  = getFirstImage(p);
+  const newBadge = p.is_new_arrival
+    ? `<span class="absolute top-2 left-2 bg-red-700 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full z-10">New</span>`
+    : '';
+  const oldPriceHtml = p.compare_price
+    ? `<span class="text-xs text-gray-400 line-through ml-1">${inrFormat(p.compare_price)}</span>` : '';
+  const catName = p.categories?.name || '';
+
+  const card = document.createElement('div');
+  card.className = 'product-card bg-white rounded-xl shadow p-3 cursor-pointer relative';
+  card.innerHTML = `
+    ${newBadge}
+    <div class="w-full aspect-[4/5] overflow-hidden rounded-lg bg-[#f3ece4]">
+      <img src="${img}" alt="${p.name}"
+           class="w-full h-full object-cover object-top transition duration-500 hover:scale-105"
+           onerror="this.src='https://via.placeholder.com/300x400?text=No+Image'"/>
+    </div>
+    <div class="mt-3 px-1">
+      <p class="text-[10px] text-[#9c7b5e] uppercase tracking-wider mb-0.5">${catName}</p>
+      <h2 class="font-semibold text-[#8b0000] text-sm leading-snug">${p.name}</h2>
+      <p class="text-xs text-[#6b4a34] mt-0.5 line-clamp-2">${p.description || ''}</p>
+      <div class="flex items-baseline gap-1 mt-2">
+        <span class="text-pink-700 font-bold text-sm">${inrFormat(p.price)}</span>
+        ${oldPriceHtml}
+      </div>
+    </div>`;
+  card.addEventListener('click', () => {
+    localStorage.setItem('scrollPosition', window.scrollY);
+    window.location.href = `product.html?id=${p.id}`;
+  });
+  return card;
+}
+
+/* ────────────────────────────────────────────
+   SEARCH  (runs on cached allProducts — no extra DB calls)
+──────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('searchInput').addEventListener('input', () => {
+    clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(runSearch, 280);
+  });
+});
+
+function runSearch() {
+  const raw   = document.getElementById('searchInput').value.trim();
+  const query = raw.toLowerCase();
+
+  if (!query) { showHome(); return; }
+  showSearch();
+
+  /* Full-text client-side search across every relevant field */
+  const matched = allProducts.filter(p => {
+    const fields = [
+      p.name,
+      p.description,
+      p.fabric,
+      p.color,
+      p.style,
+      p.work,
+      p.collection,
+      p.categories?.name,
+      ...(Array.isArray(p.tags)   ? p.tags   : []),
+      ...(Array.isArray(p.colors) ? p.colors : []),
+    ].filter(Boolean).join(' ').toLowerCase();
+    return fields.includes(query);
+  });
+
+  /* Category filter on top */
+  const catFiltered = activeCategory === 'all'
+    ? matched
+    : matched.filter(p => p.categories?.slug === activeCategory);
+
+  searchResults = applySort(catFiltered);
+  buildCategoryFilters(matched);   // rebuild filter pills based on full match set
+  renderSearchGrid(raw);
+}
+
+function applySort(arr) {
+  const items = [...(arr || searchResults)];
+  if (activeSort === 'price_asc')  return items.sort((a, b) => a.price - b.price);
+  if (activeSort === 'price_desc') return items.sort((a, b) => b.price - a.price);
+  if (activeSort === 'newest')     return items.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  return items;
+}
+
+function applySort_event() {                 // called by <select onchange>
+  activeSort    = document.getElementById('sortSelect').value;
+  searchResults = applySort();
+  renderSearchGrid(document.getElementById('searchInput').value.trim());
+}
+
+function buildCategoryFilters(matched) {
+  const counts = {};
+  matched.forEach(p => {
+    const s = p.categories?.slug, n = p.categories?.name;
+    if (s && n) { counts[s] = counts[s] || { name: n, n: 0 }; counts[s].n++; }
+  });
+
+  let html = pill('all', `All (${matched.length})`);
+  Object.entries(counts).forEach(([slug, {name, n}]) => {
+    html += pill(slug, `${name} (${n})`);
+  });
+  document.getElementById('categoryFilters').innerHTML = html;
+}
+
+function pill(slug, label) {
+  const active = activeCategory === slug;
+  return `<button onclick="setCat('${slug}')"
+    class="px-3 py-1 text-xs rounded-full border transition
+      ${active ? 'bg-[#8b0000] text-white border-[#8b0000]' : 'border-[#c9a27a] text-[#6b4a34] hover:border-[#8b0000]'}">
+    ${label}
+  </button>`;
+}
+
+function setCat(slug) {
+  activeCategory = slug;
+  runSearch();
+}
+
+function renderSearchGrid(rawQuery) {
+  const grid  = document.getElementById('searchGrid');
+  const noRes = document.getElementById('noResults');
+  const count = document.getElementById('resultCount');
+
+  grid.innerHTML = '';
+  noRes.classList.add('hidden');
+
+  if (!searchResults.length) {
+    document.getElementById('noResultsQuery').textContent = rawQuery;
+    noRes.classList.remove('hidden');
+    count.textContent = '';
+    return;
+  }
+
+  count.textContent = `${searchResults.length} product${searchResults.length !== 1 ? 's' : ''} found`;
+  searchResults.forEach(p => grid.appendChild(createProductCard(p)));
+}
+
+/* ────────────────────────────────────────────
+   SLIDER  (built from is_new_arrival products)
+──────────────────────────────────────────── */
+function buildSlider(arrivals) {
+  const sliderEl = document.getElementById('slider');
+  const dotsEl   = document.getElementById('dots');
+  sliderEl.innerHTML = '';
+  dotsEl.innerHTML   = '';
+  totalSlides        = arrivals.length;
+  sliderIdx          = 0;
+
+  arrivals.forEach((p, i) => {
+    const img = getFirstImage(p);
+
+    /* Slide */
+    const slide = document.createElement('div');
+    slide.className = 'min-w-full text-center px-4';
+    slide.innerHTML = `
+      <div class="product-card bg-white p-4 rounded-xl shadow max-w-xs mx-auto cursor-pointer"
+           onclick="goProduct('${p.id}')">
+        <img src="${img}" alt="${p.name}"
+             class="w-full aspect-[4/5] object-cover object-top rounded"
+             onerror="this.src='https://via.placeholder.com/300x400?text=No+Image'"/>
+        <h2 class="mt-3 font-semibold text-[#8b0000]">${p.name}</h2>
+        <p class="text-[#6b4a34] text-sm">${inrFormat(p.price)}</p>
+      </div>`;
+    sliderEl.appendChild(slide);
+
+    /* Dot */
+    const dot = document.createElement('div');
+    dot.className = `w-3 h-3 rounded-full cursor-pointer transition-colors ${i === 0 ? 'bg-red-800' : 'bg-gray-400'}`;
+    dot.addEventListener('click', () => goSlide(i));
+    dotsEl.appendChild(dot);
+  });
+
+  refreshSlider();
+
+  /* Expose to window for onclick buttons */
+  window.nextSlide = () => { sliderIdx = (sliderIdx + 1) % totalSlides; refreshSlider(); };
+  window.prevSlide = () => { sliderIdx = (sliderIdx - 1 + totalSlides) % totalSlides; refreshSlider(); };
+
+  document.getElementById('sliderSkeleton').classList.add('hidden');
+  document.getElementById('sliderWrapper').classList.remove('hidden');
+
+  if (sliderTimer) clearInterval(sliderTimer);
+  sliderTimer = setInterval(window.nextSlide, 5000);
+}
+
+function goSlide(i) { sliderIdx = i; refreshSlider(); }
+
+function refreshSlider() {
+  document.getElementById('slider').style.transform = `translateX(-${sliderIdx * 100}%)`;
+  [...document.getElementById('dots').children].forEach((d, i) => {
+    d.classList.toggle('bg-red-800', i === sliderIdx);
+    d.classList.toggle('bg-gray-400', i !== sliderIdx);
+  });
+}
+
+function goProduct(id) {
+  localStorage.setItem('scrollPosition', window.scrollY);
+  window.location.href = `product.html?id=${id}`;
+}
+
+/* ────────────────────────────────────────────
+   COLLECTION GRID  (one tile per category,
+   image = first product in that category)
+──────────────────────────────────────────── */
+function buildCollectionGrid(categories) {
+  const grid = document.getElementById('collectionGrid');
+  grid.innerHTML = '';
+
+  COLLECTION_CONFIG.forEach(({ slug, label, page }) => {
+    const cat = categories.find(c => c.slug === slug);
+    if (!cat) return;
+
+    /* Pick the first product in this category as the tile image */
+    const rep = allProducts.find(p => p.category_id === cat.id);
+    const img = rep ? getFirstImage(rep) : `https://via.placeholder.com/300x400?text=${label}`;
+
+    const tile = document.createElement('a');
+    tile.href  = page;
+    tile.innerHTML = `
+      <div class="cursor-pointer hover:scale-105 active:scale-95 transition">
+        <img class="fixed-img rounded" src="${img}" alt="${label}"
+             onerror="this.src='https://via.placeholder.com/300x400?text=${label}'"/>
+        <p class="mt-2 text-[#6b4a34]">${label}</p>
+      </div>`;
+    grid.appendChild(tile);
+  });
+
+  document.getElementById('collectionSkeleton').classList.add('hidden');
+  document.getElementById('collectionGrid').classList.remove('hidden');
+}
+
+/* ────────────────────────────────────────────
+   INITIAL LOAD  — fetch everything once
+──────────────────────────────────────────── */
+async function loadData() {
+  try {
+    /* Products with joined category name/slug */
+    const { data: products, error: pErr } = await db
+      .from('products')
+      .select('*, categories(id, name, slug)')
+      .order('created_at', { ascending: false });
+
+    if (pErr) throw pErr;
+    allProducts = products || [];
+
+    /* Categories */
+    const { data: categories, error: cErr } = await db
+      .from('categories')
+      .select('id, name, slug');
+
+    if (cErr) throw cErr;
+
+    /* Build slider from new arrivals */
+    const newArrivals = allProducts.filter(p => p.is_new_arrival);
+    if (newArrivals.length) {
+      buildSlider(newArrivals);
+    } else {
+      document.getElementById('sliderSkeleton').innerHTML =
+        '<p class="text-center text-[#9c7b5e] py-6">New arrivals coming soon ✨</p>';
+    }
+
+    /* Build collection tiles */
+    buildCollectionGrid(categories || []);
+
+  } catch (err) {
+    console.error('Supabase load error:', err);
+    document.getElementById('sliderSkeleton').innerHTML =
+      '<p class="text-center text-red-500 py-6">Could not load products. Please refresh the page.</p>';
+    document.getElementById('collectionSkeleton').innerHTML =
+      '<p class="col-span-4 text-center text-red-500 py-6">Could not load collections.</p>';
+  }
+}
+
+/* Wire up the sort dropdown (used inside HTML onchange) */
+window.applySort = applySort_event;
+
+loadData();
+</script>
+</body>
+</html>

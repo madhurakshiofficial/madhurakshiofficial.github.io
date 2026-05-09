@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Madhurakshi</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+body { font-family: 'Poppins', sans-serif; background:#fdf6ee; }
+.logo-text { font-family:'Cinzel', serif; letter-spacing:3px; color:#8b0000; }
+.heading { font-family:'Playfair Display', serif; }
+.fixed-img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 0.5rem;
+  background: #f3ece4;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="sticky top-0 bg-white shadow-md z-50">
+
+  <!-- ROW 1 -->
+  <div class="max-w-7xl mx-auto flex items-center justify-between px-4 py-4 gap-4">
+
+    <!-- LOGO -->
+    <h1 class="logo-text text-lg md:text-3xl whitespace-nowrap">MADHURAKSHI</h1>
+
+    <!-- SEARCH -->
+    <div class="flex-1 max-w-md relative">
+      <div class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+          stroke="#8b5e3c" stroke-width="1.25" class="w-5 h-5">
+          <circle cx="11" cy="11" r="7"/>
+          <line x1="20" y1="20" x2="16.5" y2="16.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <!-- ✅ FIX: oninput instead of onkeyup, no inline call -->
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search"
+        class="border p-2 pl-10 w-full rounded-md"
+      />
+    </div>
+
+    <!-- ICONS -->
+    <div class="flex items-center gap-10 md:gap-12 text-center text-xs">
+      <div class="flex flex-col items-center cursor-pointer group">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+          stroke="#8b5e3c" stroke-width="1.5" class="w-5 h-5 group-hover:scale-110 transition">
+          <path stroke-linecap="round" stroke-linejoin="round"
+          d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 0115 0"/>
+        </svg>
+        <span class="hidden md:block mt-1">Account</span>
+      </div>
+
+      <div class="flex flex-col items-center cursor-pointer group">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+          stroke="#8b5e3c" stroke-width="1.5" class="w-5 h-5 group-hover:scale-110 transition">
+          <path d="M12 20s-7-4.5-7-10a4 4 0 017-2.5A4 4 0 0119 10c0 5.5-7 10-7 10z"/>
+        </svg>
+        <span class="hidden md:block mt-1">Saved</span>
+      </div>
+
+      <div class="flex flex-col items-center cursor-pointer group">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+          stroke="#8b5e3c" stroke-width="1.5" class="w-5 h-5">
+          <path d="M6 8h12l-1.2 10H7.2L6 8z"/>
+          <path d="M9 8V6a3 3 0 016 0v2"/>
+        </svg>
+        <span class="hidden md:block mt-1">Cart</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 2 MENU -->
+  <div class="hidden md:flex justify-center gap-10 pb-3 text-sm text-[#7a1f1f]">
+    <a href="#" class="hover:underline">Home</a>
+    <a href="#collection" class="hover:underline">Collections</a>
+    <a href="#contact" class="hover:underline">Contact</a>
+  </div>
+
+</div>
+
+<!-- MOBILE MENU -->
+<div id="mobileMenu" class="fixed top-0 left-0 w-72 h-full bg-white z-50 transform -translate-x-full transition-transform duration-300 shadow-lg">
+  <div class="flex justify-between items-center p-5">
+    <span class="text-lg font-semibold text-[#7a1f1f]">MENU</span>
+    <button onclick="closeMenu()" class="text-2xl">✕</button>
+  </div>
+  <div class="flex flex-col px-6 gap-6 text-[#7a1f1f] tracking-widest text-sm">
+    <a href="index.html">HOME</a>
+    <a href="#collection">COLLECTION</a>
+    <a href="lehengas.html">LEHENGAS</a>
+    <a href="anarkali.html">ANARKALI</a>
+    <a href="kurthi.html">KURTHI</a>
+    <a href="contactus.html">CONTACT US</a>
+  </div>
+</div>
+
+<div id="overlay" onclick="closeMenu()" class="fixed inset-0 bg-black/30 hidden z-40"></div>
+
+<!-- ✅ SEARCH RESULTS CONTAINER (hidden by default, shown during search) -->
+<div id="productContainer"
+  class="hidden max-w-7xl mx-auto px-4 md:px-6 py-6">
+  <div id="productGrid" class="grid grid-cols-2 md:grid-cols-4 gap-6"></div>
+</div>
+
+<!-- HERO -->
+<div id="heroSection" class="max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-12 flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+  <div class="md:w-1/2 text-center md:text-left">
+    <h1 class="heading text-xl md:text-4xl text-[#8b5e3c] leading-relaxed font-semibold">
+      Madhurakshi <br>
+      Where Indian Tradition meets modern elegance for today.
+    </h1>
+    <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+      <a href="#collection" class="bg-red-800 text-white px-6 py-3 rounded text-center w-full sm:w-auto">Explore Collection</a>
+      <a href="https://www.instagram.com/madhurakshiofficial/?hl=en" target="_blank" class="bg-red-800 text-white px-6 py-3 rounded text-center w-full sm:w-auto">Instagram</a>
+    </div>
+  </div>
+  <div class="md:w-1/3 mt-4 md:mt-0">
+    <img src="logo.png" class="mx-auto w-40 md:w-full mix-blend-multiply">
+  </div>
+</div>
+
+<!-- NEW COLLECTION SLIDER -->
+<div id="new-collection" class="max-w-7xl mx-auto px-4 md:px-6 py-10 bg-[#e8d5c4] rounded-xl overflow-hidden">
+  <h2 class="heading text-xl text-center mb-6 text-red-800">New Collection ✨</h2>
+
+  <div class="relative w-full overflow-hidden">
+
+    <div id="slider" class="flex transition-transform duration-700">
+
+      <!-- SLIDE 0 — Grishma (no link yet) -->
+      <div class="min-w-full text-center px-4">
+        <div class="product-card bg-white p-4 rounded-xl shadow hover:scale-105 transition max-w-xs mx-auto">
+          <img class="w-full aspect-[4/5] object-cover rounded" src="frontendimages/dresses/g-1.jpeg" alt="Grishma">
+          <h2 class="mt-3 font-semibold text-[#8b0000]">Grishma</h2>
+        </div>
+      </div>
+
+      <!-- SLIDE 1 — Daisy Dress -->
+      <div class="min-w-full text-center px-4">
+        <a href="d1.html">
+          <div class="product-card bg-white p-4 rounded-xl shadow hover:scale-105 transition max-w-xs mx-auto">
+            <img class="w-full aspect-[4/5] object-cover rounded" src="frontendimages/dresses/g-d-1.jpeg" alt="Daisy Dress">
+            <h2 class="mt-3 font-semibold text-[#8b0000]">Daisy Dress</h2>
+            <p class="text-[#6b4a34]">₹3,199.00</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- SLIDE 2 — Amara Dress -->
+      <div class="min-w-full text-center px-4">
+        <a href="d2.html">
+          <div class="product-card bg-white p-4 rounded-xl shadow hover:scale-105 transition max-w-xs mx-auto">
+            <img class="w-full aspect-[4/5] object-cover rounded" src="frontendimages/dresses/g-am-1.jpeg" alt="Amara Dress">
+            <h2 class="mt-3 font-semibold text-[#8b0000]">Amara Dress</h2>
+            <p class="text-[#6b4a34]">₹3,799.00</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- SLIDE 3 — Laila Dress -->
+      <div class="min-w-full text-center px-4">
+        <a href="d3.html">
+          <div class="product-card bg-white p-4 rounded-xl shadow hover:scale-105 transition max-w-xs mx-auto">
+            <img class="w-full aspect-[4/5] object-cover rounded" src="frontendimages/dresses/g-l-1.jpeg" alt="Laila Dress">
+            <h2 class="mt-3 font-semibold text-[#8b0000]">Laila Dress</h2>
+            <p class="text-[#6b4a34]">₹2,499.00</p>
+          </div>
+        </a>
+      </div>
+
+    </div>
+
+    <button onclick="prevSlide()"
+      class="absolute top-1/2 left-3 transform -translate-y-1/2 bg-white/80 px-3 py-1 rounded-full shadow">❮</button>
+    <button onclick="nextSlide()"
+      class="absolute top-1/2 right-3 transform -translate-y-1/2 bg-white/80 px-3 py-1 rounded-full shadow">❯</button>
+
+    <div id="dots" class="flex justify-center mt-4 gap-2"></div>
+  </div>
+</div>
+
+<!-- SHOP BY COLLECTION -->
+<div id="collection" class="max-w-7xl mx-auto px-4 md:px-6 py-10 text-center">
+  <h2 class="heading text-xl mb-6 text-red-800">Shop by Collection</h2>
+  <p class="text-[#6b4a34]">Discover your timeless pieces, designed to elevate your everyday elegance.</p>
+  <br><br>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+    <a href="lehengas.html">
+      <div class="cursor-pointer hover:scale-105 active:scale-95 transition">
+        <img class="fixed-img rounded" src="frontendimages/lehengas/l1-1.png" alt="Lehengas">
+        <p class="mt-2">Lehengas</p>
+      </div>
+    </a>
+    <a href="anarkali.html">
+      <div class="cursor-pointer hover:scale-105 active:scale-95 transition">
+        <img class="fixed-img rounded" src="frontendimages/anarkali/a1-1.png" alt="Anarkali">
+        <p class="mt-2">Anarkali</p>
+      </div>
+    </a>
+    <a href="kurthi.html">
+      <div class="cursor-pointer hover:scale-105 active:scale-95 transition">
+        <img class="fixed-img rounded" src="frontendimages/kurti/k1-1.png" alt="Kurti">
+        <p class="mt-2">Kurti</p>
+      </div>
+    </a>
+    <a href="dresses.html">
+      <div class="cursor-pointer hover:scale-105 active:scale-95 transition">
+        <img class="fixed-img rounded" src="frontendimages/dresses/g-d-1.jpeg" alt="Dresses">
+        <p class="mt-2">Dresses</p>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- FOOTER / CONTACT -->
+<div id="contact" class="bg-gradient-to-b from-[#8b0000] to-[#5a0000] text-white font-[Poppins]">
+  <div class="max-w-7xl mx-auto px-6 md:px-12 py-20 grid md:grid-cols-3 gap-20">
+
+    <div>
+      <img src="logo.png" class="w-150 mb-18">
+      <p class="text-[15px] leading-7 text-[#f5dada] max-w-sm mb-15">
+        Madhurakshi is about a woman who carries grace in silence,
+        and lets her elegance speak to the world.
+      </p>
+    </div>
+
+    <div>
+      <h3 class="font-semibold mb-10 text-[#fde68a]">Shop</h3>
+      <div class="space-y-4 text-sm">
+        <p><a href="anarkali.html">Anarkali</a></p>
+        <p><a href="lehengas.html">Lehenga</a></p>
+        <p><a href="kurthi.html">Kurthi</a></p>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="font-semibold mb-10 text-[#fde68a]">Help</h3>
+      <div class="space-y-4 text-sm">
+        <p><a href="contactus.html">Contact</a></p>
+        <p><a href="faq.html">FAQs</a></p>
+        <p><a href="shipping.html">Shipping & Delivery</a></p>
+        <p><a href="returns.html">Return & Exchange</a></p>
+        <p><a href="privacy.html">Privacy Policy</a></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col md:flex-row justify-center items-center gap-4 mt-4">
+    <a href="https://instagram.com/madhurakshiofficial" target="_blank"
+       class="bg-white text-[#8b0000] px-10 py-2 rounded font-semibold hover:scale-105 transition">
+       Follow on Instagram
+    </a>
+  </div>
+
+  <div class="border-t border-[#c9a27a] max-w-7xl mx-auto mt-10"></div>
+  <div class="text-center py-6 text-sm text-[#f5dada]">© 2026 Madhurakshi</div>
+</div>
+
+<!-- ✅ Supabase SDK -->
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+<script>
+/* ═══════════════════════════════════════════
+   SUPABASE INIT
+═══════════════════════════════════════════ */
+const SUPABASE_URL = 'https://cvhepeydpmxmwjmenrqz.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_abcuiG8cYZ2-mVgrSBNEfw_5uZszN-U';
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+/* ═══════════════════════════════════════════
+   SLIDER
+═══════════════════════════════════════════ */
+let sliderIndex = 0;
+let sliderInterval = null;
+
+function initSlider() {
+  const slider = document.getElementById('slider');
+  const dotsContainer = document.getElementById('dots');
+  if (!slider || !dotsContainer) return;
+
+  const totalSlides = slider.children.length;
+
+  function updateSlider() {
+    slider.style.transform = `translateX(-${sliderIndex * 100}%)`;
+    [...dotsContainer.children].forEach((dot, i) => {
+      dot.classList.toggle('bg-red-800', i === sliderIndex);
+      dot.classList.toggle('bg-gray-400', i !== sliderIndex);
+    });
+  }
+
+  // Build dots
+  dotsContainer.innerHTML = '';
+  for (let i = 0; i < totalSlides; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'w-3 h-3 rounded-full bg-gray-400 cursor-pointer';
+    dot.addEventListener('click', () => { sliderIndex = i; updateSlider(); });
+    dotsContainer.appendChild(dot);
+  }
+
+  // ✅ Expose to window so onclick attributes work
+  window.nextSlide = function () {
+    sliderIndex = (sliderIndex + 1) % totalSlides;
+    updateSlider();
+  };
+  window.prevSlide = function () {
+    sliderIndex = (sliderIndex - 1 + totalSlides) % totalSlides;
+    updateSlider();
+  };
+
+  updateSlider();
+
+  // Auto-advance
+  sliderInterval = setInterval(window.nextSlide, 5000);
+}
+
+/* ═══════════════════════════════════════════
+   HELPERS — show / hide page sections
+═══════════════════════════════════════════ */
+function showHomePage() {
+  document.getElementById('heroSection').style.display    = 'flex';
+  document.getElementById('collection').style.display    = 'block';
+  document.getElementById('new-collection').style.display = 'block';
+  document.getElementById('productContainer').classList.add('hidden');
+  document.getElementById('productGrid').innerHTML = '';
+}
+
+function showSearchPage() {
+  document.getElementById('heroSection').style.display    = 'none';
+  document.getElementById('collection').style.display    = 'none';
+  document.getElementById('new-collection').style.display = 'none';
+  document.getElementById('productContainer').classList.remove('hidden');
+}
+
+/* ═══════════════════════════════════════════
+   DISPLAY PRODUCTS
+═══════════════════════════════════════════ */
+function displayProducts(items) {
+  const grid = document.getElementById('productGrid');
+  grid.innerHTML = '';
+
+  if (!items || !items.length) {
+    grid.innerHTML = `
+      <p class="col-span-full text-center text-gray-500 py-10">
+        No products found 😢
+      </p>`;
+    return;
+  }
+
+  items.forEach(product => {
+    // ✅ Handle image field — could be a string URL or a JSON array
+    let image = 'https://via.placeholder.com/300x400?text=No+Image';
+
+    if (product.image) {
+      image = product.image;
+    } else if (Array.isArray(product.images) && product.images.length) {
+      image = product.images[0];
+    } else if (typeof product.images === 'string') {
+      try {
+        const parsed = JSON.parse(product.images);
+        if (Array.isArray(parsed) && parsed.length) image = parsed[0];
+      } catch (_) {}
+    }
+
+    const price   = product.price   ? `₹${Number(product.price).toLocaleString('en-IN')}` : '';
+    const catName = product.categories?.name || '';
+
+    const card = document.createElement('div');
+    card.className = 'bg-white rounded-xl shadow hover:shadow-lg transition p-4 cursor-pointer';
+    card.innerHTML = `
+      <img src="${image}"
+           alt="${product.name}"
+           class="w-full aspect-[4/5] object-cover object-top rounded-lg mb-3"
+           onerror="this.src='https://via.placeholder.com/300x400?text=No+Image'"/>
+      <p class="text-xs text-[#9c7b5e] mb-1 uppercase tracking-wide">${catName}</p>
+      <h2 class="font-semibold text-[#8b0000]">${product.name}</h2>
+      <p class="text-sm text-[#6b4a34] line-clamp-2">${product.description || ''}</p>
+      <p class="text-pink-700 font-bold mt-2">${price}</p>
+    `;
+    card.addEventListener('click', () => goToProduct(product.id));
+    grid.appendChild(card);
+  });
+}
+
+/* ═══════════════════════════════════════════
+   SEARCH  (debounced, hits Supabase)
+═══════════════════════════════════════════ */
+let searchTimeout = null;
+
+async function searchProducts() {
+  clearTimeout(searchTimeout);
+
+  searchTimeout = setTimeout(async () => {
+    const query = document.getElementById('searchInput').value.trim();
+
+    if (!query) {
+      showHomePage();
+      return;
+    }
+
+    showSearchPage();
+
+    // Show loading state
+    document.getElementById('productGrid').innerHTML =
+      `<p class="col-span-full text-center text-gray-400 py-10">Searching…</p>`;
+
+    try {
+      // ✅ Search across name AND description (case-insensitive)
+      const { data, error } = await client
+        .from('products')
+        .select('*, categories(name, slug)')
+        .or(`name.ilike.%${query}%,description.ilike.%${query}%`);
+
+      if (error) throw error;
+
+      displayProducts(data);
+
+    } catch (err) {
+      console.error('Search error:', err);
+      document.getElementById('productGrid').innerHTML =
+        `<p class="col-span-full text-center text-red-500 py-10">Search failed. Please try again.</p>`;
+    }
+  }, 300); // 300ms debounce
+}
+
+/* ═══════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════ */
+function goToProduct(id) {
+  if (!id) return;
+  localStorage.setItem('scrollPosition', window.scrollY);
+  window.location.href = `product.html?id=${id}`;
+}
+
+function openMenu() {
+  document.getElementById('mobileMenu').style.transform = 'translateX(0)';
+  document.getElementById('overlay').classList.remove('hidden');
+}
+
+function closeMenu() {
+  document.getElementById('mobileMenu').style.transform = 'translateX(-100%)';
+  document.getElementById('overlay').classList.add('hidden');
+}
+
+/* ═══════════════════════════════════════════
+   INIT ON DOM READY
+═══════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  initSlider();
+
+  // ✅ Attach search listener here (not inline onkeyup)
+  document.getElementById('searchInput')
+    .addEventListener('input', searchProducts);
+});
+</script>
+
+</body>
+</html>

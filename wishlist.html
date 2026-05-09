@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wishlist — Madhurakshi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --crimson: #8b0000; --crimson-light: #a31515;
+      --gold: #c9a84c; --gold-light: #e8c97e;
+      --cream: #fdf6ee; --text-brown: #5c3d2e; --text-light: #8a6a5a; --white: #ffffff;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'Poppins',sans-serif; background:var(--cream); color:var(--text-brown); min-height:100vh; }
+
+    /* HEADER */
+    header {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:16px 32px; background:var(--white);
+      box-shadow:0 1px 12px rgba(139,0,0,0.08); position:sticky; top:0; z-index:100;
+    }
+    .logo-text { font-family:'Cinzel',serif; letter-spacing:3px; color:var(--crimson); font-weight:500; font-size:1.25rem; text-decoration:none; }
+    .header-right { display:flex; align-items:center; gap:20px; }
+    .header-link { font-size:0.85rem; color:var(--crimson); text-decoration:none; display:flex; align-items:center; gap:6px; font-weight:500; transition:opacity 0.2s; }
+    .header-link:hover { opacity:0.7; }
+    .cart-btn { position:relative; cursor:pointer; display:flex; flex-direction:column; align-items:center; background:none; border:none; }
+    .cart-badge { position:absolute; top:-4px; right:-6px; background:var(--crimson); color:#fff; font-size:9px; width:16px; height:16px; border-radius:50%; display:none; align-items:center; justify-content:center; }
+
+    /* BREADCRUMB */
+    .breadcrumb { max-width:1080px; margin:0 auto; padding:12px 32px 0; font-size:0.78rem; color:var(--text-light); display:flex; gap:6px; align-items:center; }
+    .breadcrumb a { color:var(--crimson); text-decoration:none; }
+    .breadcrumb a:hover { text-decoration:underline; }
+
+    /* PAGE HEADER */
+    .page-header { max-width:1080px; margin:28px auto 0; padding:0 32px; display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+    .page-title-block .page-tag { font-size:0.68rem; letter-spacing:2.5px; text-transform:uppercase; color:var(--gold); font-weight:500; margin-bottom:6px; }
+    .page-title-block h1 { font-family:'Playfair Display',serif; font-size:2.2rem; color:var(--crimson); font-weight:500; line-height:1.1; }
+    .page-count { font-size:0.8rem; color:var(--text-light); margin-top:4px; }
+    .btn-clear-all { display:flex; align-items:center; gap:7px; padding:9px 18px; background:transparent; border:1.5px solid rgba(139,0,0,0.28); border-radius:50px; font-family:'Poppins',sans-serif; font-size:0.75rem; color:var(--crimson); cursor:pointer; letter-spacing:0.5px; transition:all 0.2s; }
+    .btn-clear-all:hover { background:#fff5f5; border-color:var(--crimson); }
+
+    /* GRID */
+    .wishlist-grid { max-width:1080px; margin:28px auto 60px; padding:0 32px; display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:20px; }
+
+    /* CARD */
+    .wish-card { background:var(--white); border-radius:14px; overflow:hidden; box-shadow:0 2px 12px rgba(139,0,0,0.07); transition:transform 0.25s,box-shadow 0.25s; animation:cardIn 0.4s ease both; }
+    .wish-card:hover { transform:translateY(-5px); box-shadow:0 10px 30px rgba(139,0,0,0.13); }
+    @keyframes cardIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+
+    .wish-card__img { aspect-ratio:4/5; background:#f3ece4; overflow:hidden; position:relative; }
+    .wish-card__img img { width:100%; height:100%; object-fit:cover; object-position:top; transition:transform 0.4s; }
+    .wish-card:hover .wish-card__img img { transform:scale(1.04); }
+    .wish-card__img-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#d4b8a8; }
+
+    .wish-card__remove { position:absolute; top:10px; right:10px; width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.9); border:1.5px solid rgba(139,0,0,0.15); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.2s; color:var(--text-light); }
+    .wish-card__remove:hover { background:#fff5f5; color:var(--crimson); border-color:var(--crimson); }
+
+    .wish-card__body { padding:14px 16px 18px; }
+    .wish-card__cat { font-size:0.65rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--gold); margin-bottom:4px; }
+    .wish-card__name { font-family:'Playfair Display',serif; font-size:1rem; color:var(--crimson); margin-bottom:6px; line-height:1.3; }
+    .wish-card__price { font-size:0.95rem; font-weight:600; color:var(--text-brown); margin-bottom:14px; }
+
+    .wish-card__actions { display:flex; gap:8px; }
+    .btn-add-cart { flex:1; padding:10px; background:linear-gradient(135deg,var(--crimson),#6b0000); color:#fff; border:none; border-radius:50px; font-family:'Poppins',sans-serif; font-size:0.75rem; font-weight:500; letter-spacing:0.5px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:box-shadow 0.2s,transform 0.15s; }
+    .btn-add-cart:hover { box-shadow:0 4px 16px rgba(139,0,0,0.3); transform:translateY(-1px); }
+    .btn-add-cart:disabled { background:#ccc; cursor:not-allowed; transform:none; box-shadow:none; }
+    .btn-add-cart.in-cart { background:linear-gradient(135deg,#27794a,#1a5c38); }
+
+    .btn-view { padding:10px 14px; background:transparent; border:1.5px solid #d4b8a8; border-radius:50px; font-size:0.75rem; color:var(--text-light); cursor:pointer; text-decoration:none; display:flex; align-items:center; transition:all 0.2s; }
+    .btn-view:hover { border-color:var(--crimson); color:var(--crimson); }
+
+    /* EMPTY STATE */
+    .empty-state { max-width:400px; margin:80px auto; text-align:center; padding:0 32px; }
+    .empty-icon { width:80px; height:80px; border-radius:50%; border:2px solid var(--gold-light); display:flex; align-items:center; justify-content:center; margin:0 auto 20px; color:var(--gold); }
+    .empty-state h2 { font-family:'Playfair Display',serif; font-size:1.8rem; color:var(--crimson); margin-bottom:10px; }
+    .empty-state p { font-size:0.85rem; color:var(--text-light); line-height:1.7; margin-bottom:28px; }
+    .btn-shop { display:inline-flex; align-items:center; gap:8px; padding:14px 32px; background:linear-gradient(135deg,var(--crimson),#6b0000); color:#fff; border-radius:50px; text-decoration:none; font-family:'Poppins',sans-serif; font-size:0.85rem; font-weight:500; letter-spacing:0.5px; box-shadow:0 4px 20px rgba(139,0,0,0.3); transition:transform 0.2s,box-shadow 0.2s; }
+    .btn-shop:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(139,0,0,0.4); }
+
+    /* LOADING */
+    .loading-guard { min-height:60vh; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:14px; }
+    .loading-ring { width:30px; height:30px; border:2px solid #e8d5be; border-top-color:var(--crimson); border-radius:50%; animation:spin 0.8s linear infinite; }
+    @keyframes spin { to{transform:rotate(360deg)} }
+    .loading-text { font-size:0.82rem; color:var(--text-light); letter-spacing:0.5px; }
+
+    /* TOAST */
+    #toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px); background:#1a1a1a; color:#fff; padding:12px 24px; border-radius:30px; font-size:0.85rem; z-index:999; opacity:0; transition:all 0.3s; pointer-events:none; font-family:'Poppins',sans-serif; }
+    #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    /* WA FLOAT */
+    .wa-float { position:fixed; bottom:24px; right:24px; z-index:50; background:#25D366; color:#fff; border-radius:50%; width:56px; height:56px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(37,211,102,0.4); transition:transform 0.2s; text-decoration:none; }
+    .wa-float:hover { transform:scale(1.12); }
+
+    @media(max-width:768px) { header{padding:14px 20px;} .wishlist-grid,.page-header,.breadcrumb{padding-left:16px;padding-right:16px;} .page-title-block h1{font-size:1.8rem;} }
+
+    ::-webkit-scrollbar { width:5px; }
+    ::-webkit-scrollbar-thumb { background:#d4a373; border-radius:4px; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a href="index.html" class="logo-text">MADHURAKSHI</a>
+  <div class="header-right">
+    <a href="cart.html" class="header-link">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.98 1.61h9.72a2 2 0 001.98-1.61L23 6H6"/></svg>
+      Cart
+    </a>
+    <a href="account.html" class="header-link">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Account
+    </a>
+   <!-- <a href="index.html" class="header-link">← Back to Collection</a>-->
+  </div>
+</header>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="index.html">Home</a> /
+  <span>Wishlist</span>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-title-block">
+    <p class="page-tag">✦ Saved for later</p>
+    <h1>My Wishlist</h1>
+    <p class="page-count" id="pageCount">Loading…</p>
+  </div>
+  <button class="btn-clear-all" id="clearAllBtn" style="display:none" onclick="clearAll()">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6M9 6V4h6v2"/></svg>
+    Clear All
+  </button>
+</div>
+
+<!-- GRID -->
+<div id="wishlistGrid" class="wishlist-grid">
+  <div class="loading-guard" style="grid-column:1/-1">
+    <div class="loading-ring"></div>
+    <p class="loading-text">Loading your wishlist…</p>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- WA FLOAT -->
+<a href="https://wa.me/919559551519" target="_blank" class="wa-float" title="Chat on WhatsApp">
+  <svg viewBox="0 0 24 24" fill="white" width="28" height="28"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<!-- FOOTER -->
+<div style="background:linear-gradient(to bottom,#8b0000,#5a0000);color:#fff;text-align:center;padding:24px;font-size:12px;color:#f5dada;margin-top:20px;">
+  © 2026 Madhurakshi — <a href="index.html" style="color:#c9a27a;text-decoration:none;">Back to Home</a>
+</div>
+
+<script>
+const SUPABASE_URL='https://cvhepeydpmxmwjmenrqz.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2aGVwZXlkcG14bXdqbWVucnF6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2MTk2OTksImV4cCI6MjA5MTE5NTY5OX0.hLDAcPvwfk3w7K8_YRZwAu55kK_hEAbevPQd-fkDNl8';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+let wishlistItems=[], cartProductIds=new Set(), currentUserId=null;
+
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+function fmt(p){return '₹'+Number(p).toLocaleString('en-IN');}
+
+async function loadCartIds(uid){
+  const{data}=await sb.from('cart').select('product_id').eq('user_id',uid);
+  cartProductIds=new Set((data||[]).map(r=>r.product_id));
+}
+
+async function removeFromWishlist(itemId){
+  const card=document.getElementById('wcard-'+itemId);
+  if(card){card.style.transition='all 0.25s ease';card.style.opacity='0';card.style.transform='scale(0.93)';}
+  // Try both table names for compatibility
+  await sb.from('wishlist_items').delete().eq('id',itemId);
+  await sb.from('wishlist').delete().eq('id',itemId);
+  wishlistItems=wishlistItems.filter(i=>i.id!==itemId);
+  setTimeout(renderGrid,260);
+  showToast('Removed from wishlist');
+}
+
+async function addToCart(item,btn){
+  btn.disabled=true;
+  const{error}=await sb.from('cart').upsert({
+    user_id:currentUserId,
+    product_id:item.product_id||item.products?.id,
+    product_name:item.product_name||item.products?.name,
+    product_price:item.product_price||item.products?.price,
+    product_image:item.product_image||(item.products?.images||[])[0]||'',
+    quantity:1
+  },{onConflict:'user_id,product_id,size'});
+  if(!error){
+    cartProductIds.add(item.product_id||item.products?.id);
+    btn.classList.add('in-cart');
+    btn.innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Added`;
+    showToast((item.product_name||item.products?.name)+' added to cart');
+  } else {
+    btn.disabled=false;
+    showToast('Could not add to cart. Try again.');
+  }
+}
+
+async function clearAll(){
+  if(!confirm('Remove all items from your wishlist?'))return;
+  await sb.from('wishlist_items').delete().eq('user_id',currentUserId);
+  await sb.from('wishlist').delete().eq('user_id',currentUserId);
+  wishlistItems=[];
+  renderGrid();
+  showToast('Wishlist cleared');
+}
+
+function renderGrid(){
+  const grid=document.getElementById('wishlistGrid');
+  const count=wishlistItems.length;
+  document.getElementById('pageCount').textContent=count===0?'No saved items':count+' saved item'+(count!==1?'s':'');
+  document.getElementById('clearAllBtn').style.display=count>0?'flex':'none';
+
+  if(!count){
+    grid.innerHTML=`
+      <div class="empty-state" style="grid-column:1/-1">
+        <div class="empty-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+          </svg>
+        </div>
+        <h2>Your wishlist is empty</h2>
+        <p>Save pieces you love and find them here whenever you're ready to make them yours.</p>
+        <a href="index.html" class="btn-shop">✦ Explore Collection</a>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML=wishlistItems.map((item,idx)=>{
+    const pid=item.product_id||item.products?.id;
+    const name=item.product_name||item.products?.name||'Product';
+    const price=item.product_price||item.products?.price||0;
+    const img=item.product_image||(item.products?.images||[])[0]||'';
+    const cat=item.products?.category||'';
+    const inCart=cartProductIds.has(pid);
+    return `
+      <div class="wish-card" id="wcard-${item.id}" style="animation-delay:${idx*0.06}s">
+        <div class="wish-card__img">
+          ${img
+            ?`<img src="${img}" alt="${name}" loading="lazy">`
+            :`<div class="wish-card__img-placeholder"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`}
+          <button class="wish-card__remove" onclick="removeFromWishlist('${item.id}')" title="Remove">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="wish-card__body">
+          ${cat?`<div class="wish-card__cat">${cat}</div>`:''}
+          <div class="wish-card__name">${name}</div>
+          <div class="wish-card__price">${fmt(price)}</div>
+          <div class="wish-card__actions">
+            <button class="btn-add-cart${inCart?' in-cart':''}" id="cart-btn-${item.id}" onclick="addToCart(${JSON.stringify({product_id:pid,product_name:name,product_price:price,product_image:img}).replace(/"/g,'&quot;')},this)" ${inCart?'disabled':''}>
+              ${inCart
+                ?`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Added`
+                :`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.98 1.61h9.72a2 2 0 001.98-1.61L23 6H6"/></svg> Add to Cart`}
+            </button>
+            ${pid?`<a href="product.html?id=${pid}" class="btn-view" title="View">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </a>`:''}
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+async function init(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='auth.html';return;}
+  currentUserId=session.user.id;
+  await loadCartIds(currentUserId);
+
+  // Try wishlist_items first (from wishlist.js), fallback to wishlist table
+  let{data}=await sb.from('wishlist_items').select(`id,created_at,products(id,name,price,images,category)`).eq('user_id',currentUserId).order('created_at',{ascending:false});
+  if(!data||!data.length){
+    const res=await sb.from('wishlist').select('*').eq('user_id',currentUserId).order('added_at',{ascending:false});
+    data=res.data;
+  }
+  wishlistItems=data||[];
+  renderGrid();
+
+  sb.auth.onAuthStateChange((event)=>{if(event==='SIGNED_OUT')window.location.href='auth.html';});
+}
+
+init();
+</script>
+</body>
+</html>
